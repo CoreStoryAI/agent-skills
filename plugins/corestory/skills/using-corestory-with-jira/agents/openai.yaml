@@ -1,0 +1,13 @@
+interface:
+  display_name: "CoreStory with Jira"
+  short_description: "Ground Jira workflows in code context"
+  default_prompt: "Use $using-corestory-with-jira to help with this CoreStory workflow."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory
+      description: CoreStory code intelligence
+      transport: streamable_http
+      url: https://app.corestory.ai/mcp

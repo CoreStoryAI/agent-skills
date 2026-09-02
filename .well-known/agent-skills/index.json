@@ -1,0 +1,145 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "behavioral-verification",
+      "type": "skill-md",
+      "description": "Verify that a modernized component preserves approved legacy business behavior using CoreStory. Use for behavioral equivalence, regression comparison, rule-by-rule verification, or equivalence reports.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/behavioral-verification/SKILL.md",
+      "digest": "sha256:358fb7132f2d2464aa655b343bc7bda222d08c2602d0eab0bc9a94515d3c095f"
+    },
+    {
+      "name": "bug-resolver",
+      "type": "skill-md",
+      "description": "Resolve defects with CoreStory code intelligence and test-driven development. Use for bug reports, regressions, failures, root-cause investigations, or bug-ticket IDs; do not use for net-new feature work.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/bug-resolver/SKILL.md",
+      "digest": "sha256:12d6a8068d3838d52c104eb824e31ce191ab22fda4c09fa335ac449be3bd8924"
+    },
+    {
+      "name": "business-rules-extraction",
+      "type": "skill-md",
+      "description": "Extract, document, and source-verify business rules with CoreStory. Use for business-logic inventories, validation and authorization rules, state transitions, invariants, acceptance-criteria mapping, or implicit-rule discovery.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/business-rules-extraction/SKILL.md",
+      "digest": "sha256:e743217566b0ec7fbe0e0871d20d71e415c433523b9c04f047361f8a16d43a1d"
+    },
+    {
+      "name": "code-modernization",
+      "type": "skill-md",
+      "description": "Orchestrate legacy-system modernization with CoreStory. Use for modernization, migration, legacy refactoring, monolith decomposition, or readiness requests; route one phase at a time through human approval gates.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/code-modernization/SKILL.md",
+      "digest": "sha256:f71b7f4d02cd91a17d584f0bbd280dd87da9120c380dc7f351c4a4382b061c96"
+    },
+    {
+      "name": "codebase-assessment",
+      "type": "skill-md",
+      "description": "Assess a legacy codebase's modernization readiness with CoreStory. Use for architecture inventory, dependency and coupling analysis, technical debt, risk, readiness, or modernization assessment requests.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/codebase-assessment/SKILL.md",
+      "digest": "sha256:31fba2887f64fb18d40aa97263cf9ec5704aa5ce804ecd44cc5cac8918a0a2bc"
+    },
+    {
+      "name": "corestory",
+      "type": "skill-md",
+      "description": "Use CoreStory MCP for project discovery, architecture and requirements context, or help choosing a CoreStory workflow. Prefer a specialized installed CoreStory skill for bug resolution, feature work, modernization, test generation, or diligence.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/corestory/SKILL.md",
+      "digest": "sha256:da92611557f9730395567ce843b24719de849e89812b1aa8a2386bbc39ed9bc4"
+    },
+    {
+      "name": "decomposition-sequencing",
+      "type": "skill-md",
+      "description": "Decompose an approved modernization plan into dependency-aware work packages with CoreStory. Use for migration sequencing, waves, work packages, sprint planning, or executable modernization backlogs.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/decomposition-sequencing/SKILL.md",
+      "digest": "sha256:7c51ed29b296b74a804fb9f7b4a9aec1c6d39e2427ad7e887235141b89184617"
+    },
+    {
+      "name": "feature-gap-analysis",
+      "type": "skill-md",
+      "description": "Run a CoreStory-grounded feature gap analysis to identify existing capabilities, missing pieces, affected files, dependencies, risks, and implementation order before building a feature.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/feature-gap-analysis/SKILL.md",
+      "digest": "sha256:7a370140020485aacbba498a4294ab392fb9917f19110c45c00676683019468c"
+    },
+    {
+      "name": "generate-e2e-tests",
+      "type": "skill-md",
+      "description": "Generate end-to-end tests for critical user journeys using CoreStory acceptance criteria and code intelligence. Use for journey, browser, API-to-database, or cross-service E2E coverage.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/generate-e2e-tests/SKILL.md",
+      "digest": "sha256:1368532f061109dd649bdde49cc018036fb20c2883eb027fd5f7afdc34ec2023"
+    },
+    {
+      "name": "generate-tests",
+      "type": "skill-md",
+      "description": "Generate unit or integration behavioral tests from CoreStory specifications. Use for business-rule, validation, authorization, state-transition, invariant, or calculation coverage; not for full user-journey E2E tests.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/generate-tests/SKILL.md",
+      "digest": "sha256:69004a44b4acb6239efad7403fb4b4b4570a136080734472bce5f25187a58b12"
+    },
+    {
+      "name": "implement-feature",
+      "type": "skill-md",
+      "description": "Implement features and enhancements with CoreStory code intelligence and test-driven development. Use for feature tickets or requested product changes; do not use for defect investigation or bug fixes.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/implement-feature/SKILL.md",
+      "digest": "sha256:043a2bbc471cd5f6d35c79bba40fa0de3cbd2e546404ad5ff9a6dd9fa795e279"
+    },
+    {
+      "name": "ma-technical-due-diligence",
+      "type": "skill-md",
+      "description": "Perform technical due diligence on an acquisition target using CoreStory code intelligence. Use for M&A diligence, acquisition review, architecture and code quality assessment, risk, scalability, security, or integration analysis.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/ma-technical-due-diligence/SKILL.md",
+      "digest": "sha256:e0c85cf283707e1118cf652e495e248fc76f0f92b7107f1d8e0f253a33aeeaf5"
+    },
+    {
+      "name": "monolith-to-microservices",
+      "type": "skill-md",
+      "description": "Guide service extraction from a monolith using CoreStory and the Strangler Fig pattern. Use for service-boundary discovery, microservice extraction, database decomposition, coexistence, or cutover planning.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/monolith-to-microservices/SKILL.md",
+      "digest": "sha256:f200ed7b308d05c5c60b741849be49ab01231947af6f04cccd5e48570722ae39"
+    },
+    {
+      "name": "spec-driven-development",
+      "type": "skill-md",
+      "description": "Use CoreStory for architecture-grounded spec-driven development. Invoke when writing a feature specification, designing a change, planning from a spec, or implementing through a specification-first workflow.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/spec-driven-development/SKILL.md",
+      "digest": "sha256:34b43b941642c973522b4ab189624e1ec029854eb822c4957ba959244637e2ad"
+    },
+    {
+      "name": "spec-driven-test-generation",
+      "type": "skill-md",
+      "description": "Choose and sequence CoreStory's behavioral or end-to-end test-generation workflow. Use when the user wants tests grounded in acceptance criteria, business rules, invariants, or user journeys rather than implementation details.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/spec-driven-test-generation/SKILL.md",
+      "digest": "sha256:4db3ded0f3915087eefa265f6f2cb876b15a88122d49dfe1624cf48c2b55e03b"
+    },
+    {
+      "name": "spec-kit-companion",
+      "type": "skill-md",
+      "description": "Combine GitHub Spec Kit artifacts and commands with CoreStory's architecture-grounded spec-driven workflow. Use when a project uses Spec Kit or .specify artifacts alongside CoreStory.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/spec-kit-companion/SKILL.md",
+      "digest": "sha256:aed57f2ea66e0b757fad3e6c4623bee9a39517e9162eeb7dfe9104ff6cea35ac"
+    },
+    {
+      "name": "target-architecture",
+      "type": "skill-md",
+      "description": "Define and compare modernization strategies, target architecture, risk, and effort with CoreStory. Use for 7-R strategy selection, target-state design, migration-pattern decisions, or architecture decision records.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/target-architecture/SKILL.md",
+      "digest": "sha256:0c0e8d0490963311c112e9725b756a9186ceacb1f3936d78a9e09e3af991e6cb"
+    },
+    {
+      "name": "using-corestory-with-jira",
+      "type": "skill-md",
+      "description": "Coordinate Jira ticket intake or updates with CoreStory code intelligence. Use to resolve, enrich, draft, or triage Jira issues when both Jira and CoreStory MCP servers are available.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/using-corestory-with-jira/SKILL.md",
+      "digest": "sha256:a4fc298fa5d18634e1bea6384c1002633f74c8e0bf3636a6d0302168d2770bdf"
+    },
+    {
+      "name": "vibe-conformance-audit",
+      "type": "skill-md",
+      "description": "Run an independent, read-only, atom-grain audit of modernized code against legacy source. Use for anti-circular verification, stub detection, completeness audits, orphan behavior, or delivered-versus-required checks.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/vibe-conformance-audit/SKILL.md",
+      "digest": "sha256:c11ff57618deb7392492a73fe1d0d6b15582e944d19d44e3684ad6414b8135fd"
+    },
+    {
+      "name": "vibe-modernization",
+      "type": "skill-md",
+      "description": "Orchestrate agent-led, human-gated modernization from a legacy system into an existing or greenfield target. Use for dual-project migration, forward engineering, source-grounded gaps, parity, or conformance work.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/vibe-modernization/SKILL.md",
+      "digest": "sha256:bc061a68ec4aa3c926aed7594798fd559dfef766a87e40d21c897e47e965672b"
+    }
+  ]
+}

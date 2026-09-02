@@ -1,0 +1,35 @@
+{
+  "name": "corestory",
+  "version": "1.0.0",
+  "description": "CoreStory code-intelligence workflows and an OAuth-connected MCP server for architecture-grounded software work.",
+  "author": {
+    "name": "CoreStory",
+    "url": "https://corestory.ai"
+  },
+  "homepage": "https://docs.corestory.ai",
+  "repository": "https://github.com/corestoryai/agent-skills",
+  "keywords": [
+    "code-intelligence",
+    "software-architecture",
+    "agent-skills",
+    "modernization",
+    "spec-driven-development",
+    "testing"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "CoreStory",
+    "shortDescription": "Architecture-grounded software workflows",
+    "longDescription": "Use CoreStory's persistent code intelligence for bug resolution, feature implementation, specification, testing, modernization, and technical diligence.",
+    "developerName": "CoreStory",
+    "category": "Productivity",
+    "capabilities": [
+      "Code intelligence",
+      "Architecture analysis",
+      "Software delivery workflows"
+    ],
+    "websiteURL": "https://corestory.ai",
+    "defaultPrompt": "Use CoreStory to understand this codebase and choose the most relevant installed workflow."
+  }
+}

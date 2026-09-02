@@ -1,0 +1,28 @@
+{
+  "name": "corestory",
+  "description": "Official CoreStory code-intelligence skills and MCP integration.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "CoreStory"
+  },
+  "plugins": [
+    {
+      "name": "corestory",
+      "source": "./plugins/corestory",
+      "description": "CoreStory code-intelligence workflows and OAuth-connected MCP access.",
+      "version": "1.0.0",
+      "author": {
+        "name": "CoreStory"
+      },
+      "homepage": "https://docs.corestory.ai",
+      "repository": "https://github.com/corestoryai/agent-skills",
+      "category": "development",
+      "tags": [
+        "code-intelligence",
+        "architecture",
+        "modernization",
+        "testing"
+      ]
+    }
+  ]
+}

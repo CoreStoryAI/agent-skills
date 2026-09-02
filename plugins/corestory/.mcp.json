@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "corestory": {
+      "type": "http",
+      "url": "https://app.corestory.ai/mcp"
+    }
+  }
+}

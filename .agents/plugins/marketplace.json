@@ -1,0 +1,20 @@
+{
+  "name": "corestory",
+  "interface": {
+    "displayName": "CoreStory"
+  },
+  "plugins": [
+    {
+      "name": "corestory",
+      "source": {
+        "source": "local",
+        "path": "./plugins/corestory"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

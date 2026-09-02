@@ -1,0 +1,13 @@
+interface:
+  display_name: "CoreStory Spec-Driven Tests"
+  short_description: "Route specification-driven testing"
+  default_prompt: "Use $spec-driven-test-generation to help with this CoreStory workflow."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory
+      description: CoreStory code intelligence
+      transport: streamable_http
+      url: https://app.corestory.ai/mcp

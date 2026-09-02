@@ -1,0 +1,13 @@
+interface:
+  display_name: "CoreStory Feature Gap Analysis"
+  short_description: "Map gaps before implementation"
+  default_prompt: "Use $feature-gap-analysis to help with this CoreStory workflow."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory
+      description: CoreStory code intelligence
+      transport: streamable_http
+      url: https://app.corestory.ai/mcp

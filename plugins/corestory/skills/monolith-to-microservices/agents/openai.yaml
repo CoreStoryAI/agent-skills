@@ -1,0 +1,13 @@
+interface:
+  display_name: "CoreStory Monolith Extraction"
+  short_description: "Extract services from a monolith"
+  default_prompt: "Use $monolith-to-microservices to help with this CoreStory workflow."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory
+      description: CoreStory code intelligence
+      transport: streamable_http
+      url: https://app.corestory.ai/mcp
