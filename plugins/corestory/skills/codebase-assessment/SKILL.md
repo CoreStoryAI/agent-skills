@@ -108,6 +108,10 @@ Query CoreStory to map the system's structure:
    New title: "RESOLVED - [Assessment] SystemName - Modernization Readiness"
    ```
 
+**HITL Gate: Technical leadership and product/business stakeholders review the Modernization Readiness Report and make an explicit go/no-go decision. Do not proceed to Business Rules Inventory (Phase 2) or Target Architecture (Phase 3) without that approval.**
+
+Present four decisions for the reviewers to make: go/no-go on modernization at all, confirmation of the per-component 7 Rs strategies, priority alignment against business priorities, and any organizational prerequisites (staffing, governance, budget) that must be resolved first. Recommend a domain-expert review for mainframe or legacy systems where business logic lives in non-code artifacts, and a security/compliance review if the assessment flagged compliance constraints. The assessment informs every downstream decision, so an unapproved assessment creates compounding errors.
+
 ## Error Handling
 
 - **Project not found:** List available projects, ask user to specify the target

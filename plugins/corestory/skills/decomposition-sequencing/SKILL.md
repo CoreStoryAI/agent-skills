@@ -49,6 +49,8 @@ Activate when user requests:
 - Identify parallel execution opportunities
 - Analyze risk concentration per sequence position
 
+**HITL Gate: The engineering lead reviews and approves the migration sequence and dependency map before work packages are authored. Do not proceed to Step 5 without that approval.**
+
 ## Step 5: Work Package Definition
 For each work package, define:
 - Transform: delta spec scope, target patterns, files, test strategy
@@ -58,10 +60,9 @@ For each work package, define:
 
 ## Step 6: Ticketing System Integration
 After the engineering lead approves the sequence, use Jira or Linear only if the user explicitly requests the external write:
-- Create the migration epic
+- Create migration epic
 - Create stories per work package with Transform/Coexist/Eliminate sub-tasks
 - Link dependencies between work packages
-Otherwise, output the same structure for review or manual import.
 
 **HITL Gate: Engineering lead approves the sequence. Approval of the sequence is not authorization to push it to a ticketing system; require an explicit request for that external write.**
 

@@ -49,6 +49,25 @@ Before doing anything, determine where the user is in the process:
 
 Once you know the target phase, read and follow its dedicated skill completely.
 
+## Execution Mode
+
+The six phases prescribe *where* decisions happen, not how much of the work between those
+decisions the agent does. Before routing to Phase 1, establish which mode the user wants:
+
+- **Human-led (default).** The phases below, as written. Engineers read the code and decide; the
+  agent advises. Use this when the labor split is unsettled or the team wants continuous review.
+- **Agent-led and human-gated — Vibe Modernization.** Use the `vibe-modernization` skill instead
+  of this router. The agent owns the build loop end to end, and human judgment concentrates at
+  three high-leverage gates rather than at every phase boundary. Safety relocates rather than
+  disappearing: every claim in a deliverable needs a confirmed `file:line` anchor, and the
+  `vibe-conformance-audit` skill independently checks delivered code against legacy source
+  without reading the equivalence report or trusting the tests. Reach for it when behavioral
+  parity is the point and you need agent velocity without giving up the audit trail.
+
+If the user chooses Vibe Modernization, hand off to `vibe-modernization` and stop; do not also
+run the phases below. If either vibe skill is not installed, point the user at the
+[Vibe Modernization playbook](https://docs.corestory.ai/playbooks/modernization/vibe-modernization).
+
 ---
 
 ## Phase 1: Codebase Assessment

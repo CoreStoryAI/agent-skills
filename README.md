@@ -1,17 +1,20 @@
 # CoreStory Agent Skills
 
-Installable workflows that teach coding agents how to use [CoreStory](https://corestory.ai) for architecture-grounded software work. This repository packages 20 public CoreStory playbooks as portable Agent Skills and includes the CoreStory remote MCP server configuration.
+Installable workflows that teach coding agents how to use [CoreStory](https://corestory.ai) for architecture-grounded software work. This repository packages 19 Agent Skills drawn from CoreStory's 18 public playbooks, and includes the CoreStory remote MCP server configuration.
 
-## Recommended installs
+## Before you install: the MCP URL is per-organization
 
-### Codex — skills and MCP together
+Every CoreStory organization has its own MCP endpoint:
 
-```bash
-codex plugin marketplace add corestoryai/agent-skills
-codex plugin add corestory@corestory
+```
+https://app.corestory.ai/mcp/{your-org-slug}-{org-id}
 ```
 
-The first CoreStory tool call starts browser-based OAuth. Sign in with the CoreStory account that owns or can access the relevant project.
+The URL identifies the organization, not you. Everyone in an org uses the same URL, and it never spans multiple orgs. Because of that, **this repository cannot ship a working URL** — you supply your own, copied from **CoreStory → Settings → IDE Integrations**. How you supply it differs by tool, so follow the matching section below.
+
+Authentication is browser-based OAuth against CoreStory's identity provider. There is no token to copy or store, and access is limited to the permissions of the signed-in CoreStory user.
+
+## Install
 
 ### Claude Code — skills and MCP together
 
@@ -20,29 +23,40 @@ claude plugin marketplace add corestoryai/agent-skills
 claude plugin install corestory@corestory
 ```
 
-Use `/mcp` in Claude Code if you need to complete or refresh the CoreStory OAuth connection.
+The plugin declares `mcp_url` as required user configuration, so Claude Code prompts you for your organization's URL during install and stores it. If you skip the prompt, the CoreStory server reports that its URL is unset; run `/plugin manage`, select **corestory**, and configure it. Use `/mcp` to complete or refresh the OAuth connection.
 
-### Any supported coding agent — skills only
+### Codex — skills and MCP as two steps
 
-The GitHub CLI can install all skills for Codex, Claude Code, GitHub Copilot, Cursor, Gemini CLI, and many other agents:
+```bash
+codex plugin marketplace add corestoryai/agent-skills
+codex plugin add corestory@corestory
+```
+
+Codex does not expand configuration values inside MCP server declarations, so the Codex plugin manifest declares no MCP server at all, and the URL in each skill's `agents/openai.yaml` is a deliberately unusable placeholder (`https://REPLACE-WITH-YOUR-ORG-MCP-URL.invalid`). **Adding the server is a required manual step:**
+
+```bash
+codex mcp add corestory --url https://app.corestory.ai/mcp/your-org-slug-123456789
+```
+
+The first CoreStory tool call starts browser-based OAuth. Sign in with the CoreStory account that owns or can access the relevant project.
+
+### Other agents — skills only
+
+The GitHub CLI installs the skills without any MCP configuration:
 
 ```bash
 gh skill install corestoryai/agent-skills --all --agent codex --scope user
 ```
 
-Change `--agent codex` to the target shown by `gh skill install --help`. A skills-only install does not install the MCP connection; configure the remote server separately:
-
-```bash
-codex mcp add corestory --url https://app.corestory.ai/mcp
-```
-
-The installer referenced by the original CoreStory UX report also discovers all 20 skills:
+Run `gh skill install --help` for the agent targets your `gh` build supports, and pass the one you need to `--agent`. An alternative installer:
 
 ```bash
 npx skills add corestoryai/agent-skills --skill '*' --agent codex --global --yes --full-depth
 ```
 
-The universal endpoint uses OAuth. If CoreStory cannot select the correct organization after sign-in, replace it with the organization-specific URL from **CoreStory → Settings → IDE Integrations**.
+Neither path configures the MCP connection. Add it yourself with your agent's own MCP configuration mechanism and your organization's URL — for Codex, the `codex mcp add` command above.
+
+Skill layouts, manifests, and MCP capabilities differ across agents. A skills-only install gives an agent the workflows; without a CoreStory MCP connection those workflows will stop at their first grounding step and ask you to configure it.
 
 ## Included skills
 
@@ -56,8 +70,7 @@ The universal endpoint uses OAuth. If CoreStory cannot select the correct organi
 
 ### Specifications and tests
 
-- `spec-driven-development` — six-phase specification-first delivery
-- `spec-kit-companion` — CoreStory grounding for GitHub Spec Kit artifacts
+- `spec-driven-development` — six-phase specification-first delivery, including GitHub Spec Kit integration
 - `spec-driven-test-generation` — router for behavioral and E2E testing
 - `generate-tests` — unit- and integration-level behavioral coverage
 - `generate-e2e-tests` — critical user-journey coverage
@@ -80,7 +93,9 @@ The universal endpoint uses OAuth. If CoreStory cannot select the correct organi
 
 ## What this package can access
 
-The plugin declares one remote MCP server: `https://app.corestory.ai/mcp`. It contains no hooks and runs no local executable code. The MCP connection uses browser-based OAuth and is limited by the signed-in user's CoreStory permissions. Some skills can edit the repository or an explicitly connected system such as Jira when the user asks the agent to do so.
+The plugin declares one remote MCP server, `corestory`, whose URL you provide at install time as described above. It contains no hooks and runs no local executable code. The MCP connection uses browser-based OAuth and is limited by the signed-in user's CoreStory permissions.
+
+Reading and analysis are the default in every skill. Some skills can edit the repository, or an explicitly connected system such as Jira, when you ask the agent to do so — see [`SOURCES.md`](SOURCES.md) for the itemized list of behaviors that require an explicit request.
 
 Review [`plugins/corestory/.mcp.json`](plugins/corestory/.mcp.json) and the individual `SKILL.md` files before installing if you want to inspect the exact behavior.
 
@@ -88,6 +103,7 @@ Review [`plugins/corestory/.mcp.json`](plugins/corestory/.mcp.json) and the indi
 
 ```bash
 python3 scripts/validate-release.py
+python3 scripts/build-catalog.py --check
 gh skill publish --dry-run
 claude plugin validate plugins/corestory
 claude plugin validate .
@@ -95,13 +111,19 @@ claude plugin validate .
 
 ## Discovery and republishing
 
-The repository includes an Agent Skills discovery catalog at [`.well-known/agent-skills/index.json`](.well-known/agent-skills/index.json). To generate a docs-host-ready tree with lowercase `skill.md` paths:
+The repository includes an Agent Skills discovery catalog at [`.well-known/agent-skills/index.json`](.well-known/agent-skills/index.json), carrying a sha256 digest per skill. Every edit to a `SKILL.md` invalidates its digest, so re-run the catalog build after any content change:
+
+```bash
+python3 scripts/build-catalog.py
+```
+
+To generate a docs-host-ready tree with lowercase `skill.md` paths:
 
 ```bash
 python3 scripts/export-well-known.py --output-dir dist/well-known
 ```
 
-See [`SOURCES.md`](SOURCES.md) for the public CoreStory playbook behind every packaged skill.
+See [`SOURCES.md`](SOURCES.md) for the public CoreStory source behind every packaged skill.
 
 ## Status and support
 

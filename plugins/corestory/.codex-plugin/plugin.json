@@ -17,7 +17,6 @@
     "testing"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "CoreStory",
     "shortDescription": "Architecture-grounded software workflows",

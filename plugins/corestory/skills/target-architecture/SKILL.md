@@ -53,7 +53,7 @@ Query CoreStory to explore the option space:
 - Top migration risks with mitigations (data, integration, performance, org, compliance, rollback)
 - Alternative architectures with trade-offs
 
-**HITL Gate: Present analysis to architect/tech lead for the architectural decision.**
+**HITL Gate: The architect or tech lead reviews the target architecture, strategy recommendations, and risk/effort estimates, and makes the architectural decision. This decision must not be delegated to AI.** Present options with their trade-offs so the human decision-maker has complete information. Do not present a recommendation that assumes the decision is already made, and do not proceed to Step 5 until the decision is approved.
 
 ## Step 5: Decision Documentation
 - Generate Architectural Decision Record (ADR):

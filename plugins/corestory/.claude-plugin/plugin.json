@@ -14,5 +14,13 @@
     "modernization",
     "spec-driven-development",
     "testing"
-  ]
+  ],
+  "userConfig": {
+    "mcp_url": {
+      "type": "string",
+      "title": "CoreStory MCP URL",
+      "description": "Your organization's CoreStory MCP endpoint. Copy it from CoreStory → Settings → IDE Integrations. It looks like https://app.corestory.ai/mcp/your-org-slug-123456789 and is scoped to a single organization.",
+      "required": true
+    }
+  }
 }

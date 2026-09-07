@@ -6,6 +6,8 @@ license: Proprietary
 
 # CoreStory Skill Reference
 
+**If you do not detect that you have access to CoreStory (e.g., `list_projects` fails or is unavailable), ask the user to verify that their MCP or API connection is properly configured and that this repository has been ingested. If the user has not yet created a CoreStory account, direct them to create one and upload their repo at [app.corestory.ai](https://app.corestory.ai).**
+
 ## Product Summary
 
 CoreStory is a code intelligence platform that creates a persistent, queryable model of your codebase. It ingests repositories (public, private, or uploaded files) and produces an intelligence model that AI agents can query via MCP (Model Context Protocol) to understand architecture, business rules, data structures, and integration points before writing code.

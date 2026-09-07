@@ -1,6 +1,6 @@
 ---
 name: spec-driven-development
-description: "Use CoreStory for architecture-grounded spec-driven development. Invoke when writing a feature specification, designing a change, planning from a spec, or implementing through a specification-first workflow."
+description: "Use CoreStory for architecture-grounded spec-driven development. Invoke when writing a feature specification, designing a change, planning from a spec, or implementing through a specification-first workflow, including projects that use GitHub Spec Kit or .specify artifacts."
 license: Proprietary
 ---
 
@@ -12,7 +12,6 @@ Execute the six-phase spec-driven development workflow. Every spec must be groun
 
 ## CoreStory MCP Tools
 - `CoreStory:list_projects` — list available projects
-- `CoreStory:get_project` — verify project status
 - `CoreStory:create_conversation` — start specification thread
 - `CoreStory:send_message` — query code intelligence
 - `CoreStory:get_project_prd` — access product requirements
@@ -92,3 +91,37 @@ Query CoreStory for:
 - Delta specs, not greenfield specs
 - Validate before Plan
 - Conversation IS the living spec record
+
+## Spec Kit Integration (only if `.specify/` exists)
+
+Skip this section entirely when the project does not use GitHub Spec Kit. When `.specify/`
+is present, persist artifacts through Spec Kit while CoreStory supplies the grounding and
+does the validating. CoreStory before Spec Kit at every phase.
+
+| Artifact | Location | Created by |
+| --- | --- | --- |
+| Constitution | `.specify/memory/constitution.md` | `/speckit.constitution` |
+| Feature spec | `.specify/memory/features/{name}/spec.md` | `/speckit.specify` |
+| Technical plan | `.specify/memory/features/{name}/plan.md` | `/speckit.plan` |
+| Task breakdown | `.specify/memory/features/{name}/tasks.md` | `/speckit.tasks` |
+
+Phase mapping: Ground -> `/speckit.constitution`; Specify -> `/speckit.specify`;
+**Validate -> CoreStory only** (Spec Kit has no validation command -- paste the contents of
+`spec.md` into a CoreStory message and ask for an architectural pre-mortem, then edit the
+artifact directly); Plan -> `/speckit.plan` then `/speckit.tasks`; Implement ->
+`/speckit.implement`; **Verify & Capture -> CoreStory only** (no Spec Kit equivalent).
+
+Phases 3 and 6 have no Spec Kit command and must not be skipped -- they are the gap this
+integration exists to close. The constitution is the highest-leverage artifact; invest the
+most query time there and update it after features ship. Version-control the artifacts:
+commit `.specify/memory/` so specs are PR-reviewable alongside the code. If a generated
+artifact conflicts with confirmed source behavior, surface the conflict and stop for a
+decision -- the CoreStory conversation is the source of truth for architectural reasoning.
+
+If Spec Kit is not yet initialized and the user wants it, install and initialize it:
+
+```bash
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+specify check
+specify init . --ai <your agent>
+```

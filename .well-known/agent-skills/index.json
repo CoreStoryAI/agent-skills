@@ -27,28 +27,28 @@
       "type": "skill-md",
       "description": "Orchestrate legacy-system modernization with CoreStory. Use for modernization, migration, legacy refactoring, monolith decomposition, or readiness requests; route one phase at a time through human approval gates.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/code-modernization/SKILL.md",
-      "digest": "sha256:f71b7f4d02cd91a17d584f0bbd280dd87da9120c380dc7f351c4a4382b061c96"
+      "digest": "sha256:a12584d9783b833d4282aa368589d793fd0a1915febafeaedf0492077871cd6d"
     },
     {
       "name": "codebase-assessment",
       "type": "skill-md",
       "description": "Assess a legacy codebase's modernization readiness with CoreStory. Use for architecture inventory, dependency and coupling analysis, technical debt, risk, readiness, or modernization assessment requests.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/codebase-assessment/SKILL.md",
-      "digest": "sha256:31fba2887f64fb18d40aa97263cf9ec5704aa5ce804ecd44cc5cac8918a0a2bc"
+      "digest": "sha256:25d6c8a08ef610d26e1d9ad76f454c4160bea19fc5f72aaa844ec3461e79241d"
     },
     {
       "name": "corestory",
       "type": "skill-md",
       "description": "Use CoreStory MCP for project discovery, architecture and requirements context, or help choosing a CoreStory workflow. Prefer a specialized installed CoreStory skill for bug resolution, feature work, modernization, test generation, or diligence.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/corestory/SKILL.md",
-      "digest": "sha256:da92611557f9730395567ce843b24719de849e89812b1aa8a2386bbc39ed9bc4"
+      "digest": "sha256:dffd1b7e82721eb33eeef51b5daa7812ee938c5f1f93d0b772ef79af0a3e74ac"
     },
     {
       "name": "decomposition-sequencing",
       "type": "skill-md",
       "description": "Decompose an approved modernization plan into dependency-aware work packages with CoreStory. Use for migration sequencing, waves, work packages, sprint planning, or executable modernization backlogs.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/decomposition-sequencing/SKILL.md",
-      "digest": "sha256:7c51ed29b296b74a804fb9f7b4a9aec1c6d39e2427ad7e887235141b89184617"
+      "digest": "sha256:0af8d710fd410662b8f0a4500ab6b21042f735a1fe93f313fb85cfc0c44a9b44"
     },
     {
       "name": "feature-gap-analysis",
@@ -90,42 +90,35 @@
       "type": "skill-md",
       "description": "Guide service extraction from a monolith using CoreStory and the Strangler Fig pattern. Use for service-boundary discovery, microservice extraction, database decomposition, coexistence, or cutover planning.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/monolith-to-microservices/SKILL.md",
-      "digest": "sha256:f200ed7b308d05c5c60b741849be49ab01231947af6f04cccd5e48570722ae39"
+      "digest": "sha256:83aeb9cc192925e80d57fcb56984e09c8e71e2baad8e0f35f8e51356c00205a9"
     },
     {
       "name": "spec-driven-development",
       "type": "skill-md",
-      "description": "Use CoreStory for architecture-grounded spec-driven development. Invoke when writing a feature specification, designing a change, planning from a spec, or implementing through a specification-first workflow.",
+      "description": "Use CoreStory for architecture-grounded spec-driven development. Invoke when writing a feature specification, designing a change, planning from a spec, or implementing through a specification-first workflow, including projects that use GitHub Spec Kit or .specify artifacts.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/spec-driven-development/SKILL.md",
-      "digest": "sha256:34b43b941642c973522b4ab189624e1ec029854eb822c4957ba959244637e2ad"
+      "digest": "sha256:9bd4bd6d48c8f750f1ba34fbe58867d7129ff1d4f1857f55087694dc1208ecd9"
     },
     {
       "name": "spec-driven-test-generation",
       "type": "skill-md",
       "description": "Choose and sequence CoreStory's behavioral or end-to-end test-generation workflow. Use when the user wants tests grounded in acceptance criteria, business rules, invariants, or user journeys rather than implementation details.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/spec-driven-test-generation/SKILL.md",
-      "digest": "sha256:4db3ded0f3915087eefa265f6f2cb876b15a88122d49dfe1624cf48c2b55e03b"
-    },
-    {
-      "name": "spec-kit-companion",
-      "type": "skill-md",
-      "description": "Combine GitHub Spec Kit artifacts and commands with CoreStory's architecture-grounded spec-driven workflow. Use when a project uses Spec Kit or .specify artifacts alongside CoreStory.",
-      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/spec-kit-companion/SKILL.md",
-      "digest": "sha256:aed57f2ea66e0b757fad3e6c4623bee9a39517e9162eeb7dfe9104ff6cea35ac"
+      "digest": "sha256:838ae92a94dea09c88dc43bb378351215527e7773a00ba55688df234828e8ad8"
     },
     {
       "name": "target-architecture",
       "type": "skill-md",
       "description": "Define and compare modernization strategies, target architecture, risk, and effort with CoreStory. Use for 7-R strategy selection, target-state design, migration-pattern decisions, or architecture decision records.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/target-architecture/SKILL.md",
-      "digest": "sha256:0c0e8d0490963311c112e9725b756a9186ceacb1f3936d78a9e09e3af991e6cb"
+      "digest": "sha256:bfc7e8bd8a95d5e1a4dd27142542a7212ce0d10e5413df22e86b3093fc956667"
     },
     {
       "name": "using-corestory-with-jira",
       "type": "skill-md",
       "description": "Coordinate Jira ticket intake or updates with CoreStory code intelligence. Use to resolve, enrich, draft, or triage Jira issues when both Jira and CoreStory MCP servers are available.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/using-corestory-with-jira/SKILL.md",
-      "digest": "sha256:a4fc298fa5d18634e1bea6384c1002633f74c8e0bf3636a6d0302168d2770bdf"
+      "digest": "sha256:12bb63474f7d1754c6bcba817161b8d8f1960da3a41d9dbccc83f83bcc53f8af"
     },
     {
       "name": "vibe-conformance-audit",

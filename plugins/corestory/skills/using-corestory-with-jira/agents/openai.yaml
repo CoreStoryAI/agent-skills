@@ -8,6 +8,17 @@ dependencies:
   tools:
     - type: mcp
       value: corestory
-      description: CoreStory code intelligence
+      description: >-
+        CoreStory code intelligence. The MCP URL is per-organization; Codex cannot
+        expand config values here, so this placeholder is deliberately unusable.
+        Run: codex mcp add corestory --url <your org URL from CoreStory settings>
       transport: streamable_http
-      url: https://app.corestory.ai/mcp
+      url: https://REPLACE-WITH-YOUR-ORG-MCP-URL.invalid
+    - type: mcp
+      value: atlassian
+      description: >-
+        Jira access for ticket intake and updates. This skill cannot run without it.
+        Atlassian's Rovo MCP server (Jira Cloud only) is the recommended option; for
+        Jira Server/Data Center use a community server such as mcp-atlassian.
+      transport: sse
+      url: https://mcp.atlassian.com/v1/sse

@@ -13,6 +13,13 @@ PLUGIN = ROOT / "plugins" / "corestory"
 SKILLS = PLUGIN / "skills"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 EXPECTED_VERSION = "1.0.0"
+# Every CoreStory org has its own MCP URL (https://app.corestory.ai/mcp/{org-slug}-{org-id}).
+# A public plugin therefore cannot ship a working URL. Claude Code prompts for it at install
+# via userConfig and expands it here; Codex has no equivalent, so it gets a placeholder that
+# cannot be mistaken for a default (.invalid is reserved by RFC 2606).
+MCP_URL_EXPANSION = "${user_config.mcp_url}"
+CODEX_PLACEHOLDER = "https://REPLACE-WITH-YOUR-ORG-MCP-URL.invalid"
+BARE_MCP_URL_RE = re.compile(r"app\.corestory\.ai/mcp(?![/\w-])")
 
 
 def frontmatter(path: Path) -> dict[str, str]:
@@ -40,8 +47,8 @@ def validate_json(path: Path) -> dict[str, object]:
 def main() -> None:
     errors: list[str] = []
     skill_files = sorted(SKILLS.glob("*/SKILL.md"))
-    if len(skill_files) != 20:
-        errors.append(f"expected 20 skills, found {len(skill_files)}")
+    if len(skill_files) != 19:
+        errors.append(f"expected 19 skills, found {len(skill_files)}")
     names: set[str] = set()
     for path in skill_files:
         try:
@@ -81,8 +88,34 @@ def main() -> None:
             errors.append(f"{label} plugin manifest identity/version mismatch")
     servers = mcp.get("mcpServers", {})
     corestory_server = servers.get("corestory", {}) if isinstance(servers, dict) else {}
-    if not isinstance(corestory_server, dict) or corestory_server.get("url") != "https://app.corestory.ai/mcp":
-        errors.append("CoreStory MCP endpoint mismatch")
+    if not isinstance(corestory_server, dict) or corestory_server.get("url") != MCP_URL_EXPANSION:
+        errors.append(
+            f"CoreStory MCP endpoint must be {MCP_URL_EXPANSION!r}: the URL is per-organization, "
+            "so a public plugin cannot hard-code one"
+        )
+    user_config = claude.get("userConfig")
+    if not isinstance(user_config, dict) or "mcp_url" not in user_config:
+        errors.append("Claude plugin manifest must declare userConfig.mcp_url so install prompts for the org URL")
+    else:
+        field = user_config["mcp_url"]
+        if not isinstance(field, dict):
+            errors.append("userConfig.mcp_url must be an object")
+        else:
+            if field.get("type") != "string":
+                errors.append("userConfig.mcp_url.type must be string")
+            if field.get("required") is not True:
+                errors.append("userConfig.mcp_url.required must be true")
+            for key in ("title", "description"):
+                if not field.get(key):
+                    errors.append(f"userConfig.mcp_url.{key} is required")
+    for path in sorted(SKILLS.glob("*/agents/openai.yaml")):
+        text = path.read_text(encoding="utf-8")
+        if BARE_MCP_URL_RE.search(text):
+            errors.append(f"{path}: bare MCP URL; Codex cannot expand config, use the invalid placeholder")
+        if CODEX_PLACEHOLDER not in text:
+            errors.append(f"{path}: missing the {CODEX_PLACEHOLDER} placeholder")
+        if "codex mcp add corestory --url" not in text:
+            errors.append(f"{path}: must document the manual 'codex mcp add corestory --url' step")
     if codex_market.get("name") != "corestory":
         errors.append("Codex marketplace name mismatch")
     if claude_market.get("name") != "corestory":

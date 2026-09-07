@@ -2,3 +2,6 @@
 dist/
 __pycache__/
 *.pyc
+
+# Release artifacts are built at tag time, never committed.
+plugins/*.zip

@@ -47,6 +47,8 @@ Activate when user requests:
 - Choose communication patterns (sync / async per interaction)
 - Design anti-corruption layer
 
+**HITL Gate: Before extraction begins, the engineering lead reviews the service boundary, the data decomposition plan, and the façade design. This is especially important for the first extraction — it establishes the pattern subsequent extractions follow.**
+
 ## Step 5: Service Extraction Execution
 - Transform: build new service using Spec-Driven Development delta spec
 - Coexist: configure façade, run both versions, monitor
