@@ -1,0 +1,16 @@
+interface:
+  display_name: "CoreStory Constraint Tickets"
+  short_description: "One-constraint tickets and a Copilot CLI completion hook"
+  default_prompt: "Use $constraint-tickets to decompose this CoreStory spec into constraint tickets and generate the completion hook."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory
+      description: >-
+        CoreStory code intelligence. The MCP URL is per-organization; Codex cannot
+        expand config values here, so this placeholder is deliberately unusable.
+        Run: codex mcp add corestory --url <your org URL from CoreStory settings>
+      transport: streamable_http
+      url: https://REPLACE-WITH-YOUR-ORG-MCP-URL.invalid

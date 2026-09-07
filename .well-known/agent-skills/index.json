@@ -37,6 +37,13 @@
       "digest": "sha256:cf454cb80231b1bc58ee40cfb3f104b207df4bf66f5193e816c5c89c612891d9"
     },
     {
+      "name": "constraint-tickets",
+      "type": "skill-md",
+      "description": "Turn a CoreStory spec into constraint-style tickets, one constraint per ticket, and generate the GitHub Copilot CLI completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to turn this spec into tickets, spec to tickets, break the spec into tickets, decompose the spec, one constraint per ticket, a completion hook, a stop hook, an agentStop hook, a Copilot hook, a refusal gate, or to not let the agent finish until a constraint holds; or for any request to make an agent act on facts a feature request never states.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/constraint-tickets/SKILL.md",
+      "digest": "sha256:51ee99f5daef791f6543f1058ecc1e2e0c4992b23caacf446ef655473cffb1fb"
+    },
+    {
       "name": "corestory",
       "type": "skill-md",
       "description": "Use CoreStory MCP for project discovery, architecture and requirements context, or help choosing a CoreStory workflow. Prefer a specialized installed CoreStory skill for bug resolution, feature work, modernization, test generation, or diligence.",

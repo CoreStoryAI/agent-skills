@@ -47,8 +47,8 @@ def validate_json(path: Path) -> dict[str, object]:
 def main() -> None:
     errors: list[str] = []
     skill_files = sorted(SKILLS.glob("*/SKILL.md"))
-    if len(skill_files) != 19:
-        errors.append(f"expected 19 skills, found {len(skill_files)}")
+    if len(skill_files) != 20:
+        errors.append(f"expected 20 skills, found {len(skill_files)}")
     names: set[str] = set()
     for path in skill_files:
         try:
