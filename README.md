@@ -1,6 +1,6 @@
 # CoreStory Agent Skills
 
-Installable workflows that teach coding agents how to use [CoreStory](https://corestory.ai) for architecture-grounded software work. This repository packages 19 Agent Skills drawn from CoreStory's 18 public playbooks, and includes the CoreStory remote MCP server configuration.
+Installable workflows that teach coding agents how to use [CoreStory](https://corestory.ai) for architecture-grounded software work. This repository packages 20 Agent Skills — 19 drawn from CoreStory's 18 public playbooks, and one, `constraint-tickets`, hand-authored from CoreStory's measured work on serving constraints to coding agents — and includes the CoreStory remote MCP server configuration.
 
 ## Before you install: the MCP URL is per-organization
 
@@ -91,9 +91,13 @@ Skill layouts, manifests, and MCP capabilities differ across agents. A skills-on
 
 - `ma-technical-due-diligence` — architecture, quality, risk, and integration assessment
 
+### Serving constraints to agents
+
+- `constraint-tickets` — one-constraint tickets from a CoreStory spec, plus the Copilot CLI completion hook that refuses to finish until each holds. A Claude Code skill whose output is for GitHub Copilot CLI; the hook and scripts it writes are files for you to review and install by hand.
+
 ## What this package can access
 
-The plugin declares one remote MCP server, `corestory`, whose URL you provide at install time as described above. It contains no hooks and runs no local executable code. The MCP connection uses browser-based OAuth and is limited by the signed-in user's CoreStory permissions.
+The plugin declares one remote MCP server, `corestory`, whose URL you provide at install time as described above. The plugin itself declares no hooks and runs no local executable code. One skill, `constraint-tickets`, generates a GitHub Copilot CLI hook configuration and two shell scripts as files in your working directory for you to review and install by hand; nothing is installed or executed by the plugin. The MCP connection uses browser-based OAuth and is limited by the signed-in user's CoreStory permissions.
 
 Reading and analysis are the default in every skill. Some skills can edit the repository, or an explicitly connected system such as Jira, when you ask the agent to do so — see [`SOURCES.md`](SOURCES.md) for the itemized list of behaviors that require an explicit request.
 

@@ -12,6 +12,10 @@ CoreStory has **18 public playbooks**. They yield **19 skills**:
 - **1 copied** from the published skill reference at
   `https://docs.corestory.ai/.well-known/agent-skills/corestory/SKILL.md`.
 
+A 20th skill, `constraint-tickets`, comes from no playbook. It is **hand-authored** from CoreStory's
+August–September 2026 measurement program on serving constraints to coding agents, the work behind
+CoreStory's 2026-09-08 Microsoft Reactor talk. Its public source is this repository.
+
 | Skill | Provenance | Public source |
 | --- | --- | --- |
 | `corestory` | copied | [CoreStory Skill Reference](https://docs.corestory.ai/.well-known/agent-skills/corestory/SKILL.md) |
@@ -33,8 +37,9 @@ CoreStory has **18 public playbooks**. They yield **19 skills**:
 | `vibe-modernization` | lifted | [Vibe Modernization](https://docs.corestory.ai/playbooks/modernization/vibe-modernization) |
 | `vibe-conformance-audit` | lifted | [Vibe Modernization — Conformance Audit](https://docs.corestory.ai/playbooks/modernization/vibe-modernization) |
 | `ma-technical-due-diligence` | lifted | [M&A Technical Due Diligence](https://docs.corestory.ai/playbooks/ma-technical-due-diligence) |
+| `constraint-tickets` | hand-authored | This repository (no playbook yet); measured program behind CoreStory's 2026-09-08 Microsoft Reactor talk |
 
-All 19 skills carry normalized Agent Skills frontmatter (`name`, `description`, `license`) in place
+All 20 skills carry normalized Agent Skills frontmatter (`name`, `description`, `license`) in place
 of whatever the source used. That change is not itemized further below.
 
 ## Behavior changes: side effects that were default in the playbooks are opt-in here
@@ -127,4 +132,26 @@ playbook block — `corestory`, `spec-driven-test-generation`, `using-corestory-
 missing it. It has been added to all three, in the canonical wording. (`spec-kit-companion` was
 also missing it; it has since been folded into `spec-driven-development`, which carries it.)
 
-Source snapshot date: 2026-09-02.
+**Claims in `constraint-tickets` brought down to their sources.** Before publication, the skill was
+reproduced from its text alone by agents that had seen nothing else (a blind ticket writer, a blind
+gate builder, a claims audit). The verdict: *"Yes, with a stated qualification … the skill reproduces
+the shape, not the instrument … So say: 'we have a skill that writes tickets and hooks in this style,
+and a person still writes the assertions.'"* Six claims in the draft were stated more strongly than
+their sources, and are corrected in the published version:
+
+| Draft claim | Published wording | Why |
+| --- | --- | --- |
+| Rule 3 rationale: "Naming the exact spot in one added sentence moved site repairs 1/15 → 0/15" | Rationale is the measured 15-of-15 assertion that passed while nine runs shipped a defect one line above it; the 1/15 → 0/15 is reported as not significant (p = 0.5) | The source calls that difference "not significant, and in the wrong direction," and the arm scoring 0/15 named none of the things the rule bans |
+| Hook: "1/15 → 15/15" unqualified | 15 of 15 *on the gate's assertion*, entailed by construction; hazard-addressed 12/15 gated vs 13/15 un-gated | A gate pass implies the criterion passes; the broader measure did not move |
+| Ticket 8: "13 of 15, against a control that never opened the file" | 13 of 15 addressed the hazard; the comparator arm read the method in 15 of 15 runs; Ticket 8 is marked measured-but-non-compliant with the review as written | The "never opened the file" control appears in no source; Ticket 8's ask is an order to investigate |
+| "byte-identical" as a quality signal | Five identical diffs mean the task admitted one patch — reassuring for correctness, no basis for a rate | The source says byte-identity is "useless for estimating a rate" |
+| "Ours once blocked the only correct repair in a batch" (uncited) | Kept, cited to the site-repair record ("first pass blocked all 15, including r4"), and paired with the false pass: the first refund gate passed a diff that shorted the customer 30.00 of 70.00 | Both directions have happened; both are now cited |
+| "none named one off-path tax defect" | "…at constraint level, though the generator surfaced that tax subsystem in about one draft in five" | The categorical form was superseded in the source |
+
+The same review found the draft did not say what it is (a Claude Code skill producing Copilot CLI
+artifacts), where the decomposition must run (a fresh invocation whose only context is the spec),
+that its own example file hands a Shopizer writer the answer, or that the gate script — not the
+fixture — owns the verdict. All four are now stated in the skill. Structural gaps it proposed but
+did not fix are listed in the skill's "Known limits" section.
+
+Source snapshot date: 2026-09-02; `constraint-tickets` added 2026-09-07.
