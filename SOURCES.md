@@ -109,6 +109,18 @@ basis in the playbook and are kept as general hygiene, not as playbook content: 
 as estimates, never implying a Jira write succeeded unless the tool confirmed it, and asking the
 user to choose when the ticket-to-repository mapping is ambiguous.
 
+**Errors in the copied skill reference.** The `corestory` skill was copied from
+`https://docs.corestory.ai/.well-known/agent-skills/corestory/SKILL.md`, which Mintlify generates
+from the docs on every deploy rather than anyone authoring it. The generated version contained four
+wrong claims, all corrected here: `describe_index` was described as a document-sectioning tool when
+it lists file paths and metadata keys in the code index (`get_project_prd` and `get_project_techspec`
+take `sections_only`/`sections` for that); a 50KB document threshold and a claim that larger
+documents "will timeout" were invented, where the real constraint is the agent's context window;
+`semantic_search` and `filter_chunks` were given latency characteristics that are documented nowhere;
+and the playbook phase table was reconstructed rather than quoted, collapsing Bug Resolution's six
+phases to five and listing two rows that are not phase sequences at all. The docs repository now
+carries a committed override so the generated version cannot reintroduce them.
+
 **The CoreStory-unavailable fallback.** Every playbook-embedded skill block opens with a paragraph
 telling the agent what to do when CoreStory is not reachable. The four skills not lifted from a
 playbook block — `corestory`, `spec-driven-test-generation`, `using-corestory-with-jira` — were

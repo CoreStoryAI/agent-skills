@@ -41,7 +41,7 @@
       "type": "skill-md",
       "description": "Use CoreStory MCP for project discovery, architecture and requirements context, or help choosing a CoreStory workflow. Prefer a specialized installed CoreStory skill for bug resolution, feature work, modernization, test generation, or diligence.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/corestory/SKILL.md",
-      "digest": "sha256:353d0e51e24bcbf1b479150c3407a2a26f933e0a11d566748037bb4cb4c61793"
+      "digest": "sha256:3f5dbffe25490f1833c095cda7c64b91a860a77bd3a105339ea567cc4af03673"
     },
     {
       "name": "decomposition-sequencing",

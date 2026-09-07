@@ -6,8 +6,6 @@ license: MIT
 
 # CoreStory Skill Reference
 
-**If you do not detect that you have access to CoreStory (e.g., `list_projects` fails or is unavailable), ask the user to verify that their MCP or API connection is properly configured and that this repository has been ingested. If the user has not yet created a CoreStory account, direct them to create one and upload their repo at [app.corestory.ai](https://app.corestory.ai).**
-
 ## Product Summary
 
 CoreStory is a code intelligence platform that creates a persistent, queryable model of your codebase. It ingests repositories (public, private, or uploaded files) and produces an intelligence model that AI agents can query via MCP (Model Context Protocol) to understand architecture, business rules, data structures, and integration points before writing code.
@@ -15,8 +13,8 @@ CoreStory is a code intelligence platform that creates a persistent, queryable m
 **Key files and commands:**
 - MCP URL: `https://app.corestory.ai/mcp/{org-slug}-{org-id}` (from Settings → IDE Integrations)
 - MCP server setup: `claude mcp add --transport http corestory {MCP_URL}`
-- Configuration: `.claude/config.json` (Claude Code), `~/.cursor/mcp.json` (Cursor), `.cursor/mcp.json` (per-project Cursor)
-- Skill files: `.claude/skills/{skill-name}/SKILL.md` (Claude Code), `.cursor/rules/{rule-name}/RULE.md` (Cursor)
+- MCP setup: `claude mcp add --transport http corestory {MCP_URL}` (Claude Code; add `--scope user` for all projects), `~/.cursor/mcp.json` or `.cursor/mcp.json` (Cursor)
+- Skill files: `.claude/skills/<skill-name>/SKILL.md` (Claude Code), `.cursor/rules/<skill-name>.mdc` (Cursor)
 - Custom instructions: `.github/copilot-instructions.md` (GitHub Copilot)
 
 **Primary docs:** https://docs.corestory.ai
@@ -62,7 +60,7 @@ Do NOT use CoreStory for:
 
 | Agent | Config File | Command |
 |-------|-------------|---------|
-| **Claude Code** | `~/.claude/config.json` or `.claude/config.json` | `claude mcp add --transport http corestory {URL}` |
+| **Claude Code** | managed by the CLI | `claude mcp add --transport http corestory {URL}` (add `--scope user` for all projects) |
 | **Claude Desktop** | UI-based | Settings → Connectors → Add custom connector |
 | **Cursor** | `~/.cursor/mcp.json` or `.cursor/mcp.json` | Edit JSON, restart Cursor |
 | **Windsurf** | `~/.codeium/windsurf/mcp_config.json` | Use `serverUrl` (not `url`) |
@@ -85,12 +83,12 @@ Every CoreStory workflow follows this pattern:
 
 | Playbook | When to Use | Key Phases |
 |----------|-------------|-----------|
-| **Bug Resolution** | Diagnose and fix bugs with architectural context | Intake → Expert → Navigator → TDD → Completion |
-| **Feature Implementation** | Build new features following existing patterns | Intake → Expert → Navigator → TDD → Completion |
-| **Spec-Driven Development** | Write grounded specs before implementation | Ground → Specify → Validate → Plan → Implement → Verify |
-| **Test Generation** | Derive tests from specifications and business rules | Extract rules → Generate tests → Verify coverage |
-| **Code Modernization** | Modernize legacy systems systematically | Assess → Inventory → Target → Decompose → Execute → Verify |
-| **M&A Due Diligence** | Evaluate acquisition targets for risk and debt | Architecture → Risks → Debt → Integration complexity |
+| **Bug Resolution** | Diagnose and fix bugs with architectural context | Bug Intake & Context Gathering → Understanding System Behavior (Expert) → Hypothesis Generation (Navigator) → Test-First Investigation → Solution Development → Completion & Knowledge Capture |
+| **Feature Implementation** | Build new features following existing patterns | Ticket Intake & Context Gathering → Understanding System Architecture (Expert) → Implementation Planning (Navigator) → Test-First Implementation → Feature Completion → Completion & Knowledge Capture |
+| **Spec-Driven Development** | Write grounded specs before implementation | Ground → Specify → Validate → Plan → Implement → Verify & Capture |
+| **Test Generation** | Derive tests from specifications and business rules | Router over two sub-playbooks: Behavioral Test Coverage (unit and integration) and E2E Test Generation (user journeys) |
+| **Code Modernization** | Modernize legacy systems systematically | Codebase Assessment → Business Rules Inventory → Target Architecture & Strategy → Decomposition & Sequencing → Iterative Execution → Behavioral Verification |
+| **M&A Due Diligence** | Evaluate acquisition targets for risk and debt | Assessment areas, not sequential phases: architecture, code quality, risk, scalability, security, and integration complexity |
 
 ## Decision Guidance
 
@@ -120,14 +118,13 @@ Every CoreStory workflow follows this pattern:
 | "Find similar patterns to this code" | ✓ | |
 | "Get all files with tag 'deprecated'" | | ✓ |
 
-**Rule:** Semantic search is slower but finds conceptual matches. Filter chunks is fast for structural queries.
+**Rule:** Use `semantic_search` when the query is conceptual and you want ranked relevance. Use `filter_chunks` when you can name the metadata exactly and want no semantic ranking at all.
 
 ### When to Request Sections vs Full Documents
 
 | Document | Approach |
 |----------|----------|
-| **PRD/TechSpec < 50KB** | Request full document with `get_project_prd` or `get_project_techspec` |
-| **PRD/TechSpec > 50KB** | Call `describe_index` first to list sections, then request only needed sections |
+| **PRD/TechSpec** | Both `get_project_prd` and `get_project_techspec` accept `sections_only`, `sections`, `limit`, and `offset`. Call with `sections_only` to discover the section list, then request just the sections you need. |
 | **Custom documents** | Use `refine_document_definition` to validate, then `generate_document` to create |
 | **Large generation** | Submit `generate_document`, then poll `get_document_generation_result` |
 
@@ -187,7 +184,7 @@ Every CoreStory workflow follows this pattern:
 
 - **Skipping Expert phase.** Jumping straight to Navigator (finding files) without understanding how the system should work leads to architectural misalignment. Always query for understanding first.
 
-- **Requesting full large documents.** PRDs and TechSpecs over 50KB will timeout. Use `describe_index` to list sections, then request only what you need.
+- **Requesting full large documents.** A whole PRD or TechSpec can exceed the agent's context window. Call `get_project_prd` or `get_project_techspec` with `sections_only` to list the sections, then request only the ones you need. `describe_index` is not a document tool — it lists file paths and filterable metadata keys in the code index.
 
 - **Stale Authorization headers.** If migrating from legacy tokens, leaving the old `Authorization` header in config suppresses the OAuth browser sign-in. Delete it entirely.
 
