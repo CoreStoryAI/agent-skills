@@ -1,7 +1,7 @@
 ---
 name: code-modernization
 description: "Orchestrate legacy-system modernization with CoreStory. Use for modernization, migration, legacy refactoring, monolith decomposition, or readiness requests; route one phase at a time through human approval gates."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Code Modernization — Orchestrator

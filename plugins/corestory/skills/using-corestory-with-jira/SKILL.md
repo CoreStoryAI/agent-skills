@@ -1,7 +1,7 @@
 ---
 name: using-corestory-with-jira
 description: "Coordinate Jira ticket intake or updates with CoreStory code intelligence. Use to resolve, enrich, draft, or triage Jira issues when both Jira and CoreStory MCP servers are available."
-license: Proprietary
+license: MIT
 ---
 
 # Using CoreStory with Jira

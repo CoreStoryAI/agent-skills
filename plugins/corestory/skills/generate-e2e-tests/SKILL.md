@@ -1,7 +1,7 @@
 ---
 name: generate-e2e-tests
 description: "Generate end-to-end tests for critical user journeys using CoreStory acceptance criteria and code intelligence. Use for journey, browser, API-to-database, or cross-service E2E coverage."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory E2E Test Generation

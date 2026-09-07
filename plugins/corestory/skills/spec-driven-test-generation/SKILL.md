@@ -1,7 +1,7 @@
 ---
 name: spec-driven-test-generation
 description: "Choose and sequence CoreStory's behavioral or end-to-end test-generation workflow. Use when the user wants tests grounded in acceptance criteria, business rules, invariants, or user journeys rather than implementation details."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Spec-Driven Test Generation

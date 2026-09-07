@@ -1,7 +1,7 @@
 ---
 name: business-rules-extraction
 description: "Extract, document, and source-verify business rules with CoreStory. Use for business-logic inventories, validation and authorization rules, state transitions, invariants, acceptance-criteria mapping, or implicit-rule discovery."
-license: Proprietary
+license: MIT
 ---
 
 # Business Rules Extraction Skill

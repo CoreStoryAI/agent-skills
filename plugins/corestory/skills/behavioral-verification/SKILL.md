@@ -1,7 +1,7 @@
 ---
 name: behavioral-verification
 description: "Verify that a modernized component preserves approved legacy business behavior using CoreStory. Use for behavioral equivalence, regression comparison, rule-by-rule verification, or equivalence reports."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Behavioral Verification

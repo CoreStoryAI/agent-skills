@@ -1,7 +1,7 @@
 ---
 name: vibe-modernization
 description: "Orchestrate agent-led, human-gated modernization from a legacy system into an existing or greenfield target. Use for dual-project migration, forward engineering, source-grounded gaps, parity, or conformance work."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Vibe Modernization — Variant Orchestrator

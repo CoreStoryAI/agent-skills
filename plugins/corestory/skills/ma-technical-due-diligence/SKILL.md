@@ -1,7 +1,7 @@
 ---
 name: ma-technical-due-diligence
 description: "Perform technical due diligence on an acquisition target using CoreStory code intelligence. Use for M&A diligence, acquisition review, architecture and code quality assessment, risk, scalability, security, or integration analysis."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory M&A Due Diligence

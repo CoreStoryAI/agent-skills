@@ -57,8 +57,8 @@ def main() -> None:
             description = fields.get("description", "")
             if set(fields) != {"name", "description", "license"}:
                 errors.append(f"{path}: frontmatter must contain name, description, and license")
-            if fields.get("license") != "Proprietary":
-                errors.append(f"{path}: license must be Proprietary")
+            if fields.get("license") != "MIT":
+                errors.append(f"{path}: license must be MIT")
             if name != path.parent.name:
                 errors.append(f"{path}: name does not match directory")
             if not NAME_RE.fullmatch(name) or len(name) > 64:

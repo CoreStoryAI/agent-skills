@@ -1,7 +1,7 @@
 ---
 name: implement-feature
 description: "Implement features and enhancements with CoreStory code intelligence and test-driven development. Use for feature tickets or requested product changes; do not use for defect investigation or bug fixes."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Feature Implementation

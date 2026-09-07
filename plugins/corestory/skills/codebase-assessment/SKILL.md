@@ -1,7 +1,7 @@
 ---
 name: codebase-assessment
 description: "Assess a legacy codebase's modernization readiness with CoreStory. Use for architecture inventory, dependency and coupling analysis, technical debt, risk, readiness, or modernization assessment requests."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Codebase Assessment

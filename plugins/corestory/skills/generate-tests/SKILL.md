@@ -1,7 +1,7 @@
 ---
 name: generate-tests
 description: "Generate unit or integration behavioral tests from CoreStory specifications. Use for business-rule, validation, authorization, state-transition, invariant, or calculation coverage; not for full user-journey E2E tests."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Test Generation

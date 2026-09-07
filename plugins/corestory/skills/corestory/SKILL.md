@@ -1,7 +1,7 @@
 ---
 name: corestory
 description: "Use CoreStory MCP for project discovery, architecture and requirements context, or help choosing a CoreStory workflow. Prefer a specialized installed CoreStory skill for bug resolution, feature work, modernization, test generation, or diligence."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Skill Reference

@@ -1,7 +1,7 @@
 ---
 name: monolith-to-microservices
 description: "Guide service extraction from a monolith using CoreStory and the Strangler Fig pattern. Use for service-boundary discovery, microservice extraction, database decomposition, coexistence, or cutover planning."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Monolith to Microservices

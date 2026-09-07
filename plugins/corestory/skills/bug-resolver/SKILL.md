@@ -1,7 +1,7 @@
 ---
 name: bug-resolver
 description: "Resolve defects with CoreStory code intelligence and test-driven development. Use for bug reports, regressions, failures, root-cause investigations, or bug-ticket IDs; do not use for net-new feature work."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Bug Resolver

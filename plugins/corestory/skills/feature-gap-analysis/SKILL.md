@@ -1,7 +1,7 @@
 ---
 name: feature-gap-analysis
 description: "Run a CoreStory-grounded feature gap analysis to identify existing capabilities, missing pieces, affected files, dependencies, risks, and implementation order before building a feature."
-license: Proprietary
+license: MIT
 ---
 
 # Feature Gap Analysis with CoreStory

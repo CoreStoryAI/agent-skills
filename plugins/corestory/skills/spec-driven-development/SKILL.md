@@ -1,7 +1,7 @@
 ---
 name: spec-driven-development
 description: "Use CoreStory for architecture-grounded spec-driven development. Invoke when writing a feature specification, designing a change, planning from a spec, or implementing through a specification-first workflow, including projects that use GitHub Spec Kit or .specify artifacts."
-license: Proprietary
+license: MIT
 ---
 
 # Spec-Driven Development with CoreStory

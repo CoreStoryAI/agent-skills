@@ -1,7 +1,7 @@
 ---
 name: vibe-conformance-audit
 description: "Run an independent, read-only, atom-grain audit of modernized code against legacy source. Use for anti-circular verification, stub detection, completeness audits, orphan behavior, or delivered-versus-required checks."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Vibe Conformance Audit

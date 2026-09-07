@@ -13,5 +13,6 @@
 - Add GitHub CLI, `npx skills`, Codex marketplace, and Claude marketplace install paths.
 - Add a digest-backed Agent Skills discovery catalog and docs-host export utility.
 - Add local and CI release validation.
+- License the release under MIT and set every skill's `license` frontmatter to `MIT`.
 - Disclose in `SOURCES.md` every playbook side effect that this package converted from a default to
   an explicit request, and every correction applied to the source material.

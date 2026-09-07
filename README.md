@@ -132,4 +132,4 @@ This is CoreStory's canonical public skills repository. The Agent Skills ecosyst
 - Product and account setup: [CoreStory documentation](https://docs.corestory.ai)
 - Security reports: see [`SECURITY.md`](SECURITY.md)
 
-No open-source license is included in this release.
+Released under the [MIT License](LICENSE). You may use, copy, modify, and redistribute these skills, including inside commercial and closed-source projects; keep the copyright and license notice with substantial copies.

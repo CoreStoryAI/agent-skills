@@ -1,7 +1,7 @@
 ---
 name: target-architecture
 description: "Define and compare modernization strategies, target architecture, risk, and effort with CoreStory. Use for 7-R strategy selection, target-state design, migration-pattern decisions, or architecture decision records."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Target Architecture & Strategy

@@ -1,7 +1,7 @@
 ---
 name: decomposition-sequencing
 description: "Decompose an approved modernization plan into dependency-aware work packages with CoreStory. Use for migration sequencing, waves, work packages, sprint planning, or executable modernization backlogs."
-license: Proprietary
+license: MIT
 ---
 
 # CoreStory Decomposition & Sequencing
