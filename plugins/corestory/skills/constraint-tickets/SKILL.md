@@ -185,20 +185,31 @@ used to assemble `SPEC.md`, the model and settings that ran the decomposition, a
 sections each ticket draws on (most draw on several; list them all). **Say plainly in
 `PROVENANCE.md` which tickets are spec-derived and which, if any, a person wrote.**
 
-## Phase 3 — Split the list: tickets, assertions, flags
+## Phase 3 — Route the list: tickets, assertions, flags
 
-The list is the ticket set from Phase 2. One constraint per ticket, so the tickets are the list.
-Every constraint on it goes to at least one of three places:
+The list is the constraint set from Phase 2 — one statement per constraint. Each constraint is routed
+by three questions, and a constraint can land in more than one place:
 
-- **Ticket** — the constraint is work someone must do. Every constraint gets one.
-- **Assertion** — the constraint is *checkable* against a working tree (a fixture, a test that runs
-  against production code paths, a static predicate). These become the gate.
-- **Flag** — the constraint is real but out of scope for the ticket the agent is working. The hook
-  surfaces it as an advisory instead of refusing (measured: 4 of 5 runs surfaced a pre-existing defect
-  during unrelated work with the flag armed, 0 of 5 without it).
+1. **Does the code violate it today, or must the change newly satisfy it?** If yes, it is work: it
+   becomes a **ticket**, one constraint per ticket. If the code already satisfies it, it does not
+   become a ticket — a ticket that says "keep X true" is a check, not work.
+2. **Can it be checked against a working tree** — a fixture, a test that runs against production code
+   paths, a static predicate? If yes, it becomes an **assertion** in the gate, whether or not it also
+   became a ticket. An already-satisfied, checkable constraint becomes an assertion only: it is
+   protected while the change lands.
+3. **Is it in scope for the ticket the agent is working?** In scope, the assertion **blocks**. Out of
+   scope, it **flags** — the hook surfaces it as an advisory instead of refusing (measured: 4 of 5
+   runs surfaced a pre-existing defect during unrelated work with the flag armed, 0 of 5 without it).
 
-Write the split as a table in `CONSTRAINTS.md`: constraint · ticket file · assertion (yes/no, how) ·
-flag-only (yes/no). This table is the artifact the architecture rests on.
+So a constraint may be a ticket *and* an assertion (violated today and checkable — the refund label,
+the tax base); an assertion only (already true and checkable); a ticket only (violated, but not
+checkable by a fixture — "the customer is notified"; a person reviews it); or a flag only (outside the
+current ticket).
+
+Write the routing as a table in `CONSTRAINTS.md`: constraint · satisfied today (yes/no) · ticket file ·
+assertion (yes/no, how) · block / flag, per ticket. This table is the artifact the architecture rests
+on. Ticket and assertion are the two measured mechanisms; the routing beyond them — assertion-only,
+ticket-only, flag — is the design the results imply, not a measured result.
 
 **Order of work.** Work the constraint tickets before the feature ticket, and work each one alone:
 its own agent session, its own change, merged before the next begins. The reasoning: constraints on
