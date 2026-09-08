@@ -22,3 +22,14 @@
   holds. It is a Claude Code skill whose artifacts are for Copilot CLI; the hook and scripts it writes
   are files for the user to review and install by hand, and the plugin still declares no hooks. Six of
   its claims were brought down to what their sources support before publication; see `SOURCES.md`.
+- Rewrite `constraint-tickets` Phase 1 to generate the implementation spec **from the feature
+  request** via `refine_document_definition` / `generate_document`, replacing the previous instruction
+  to assemble the project's standing tech spec. The two were inconsistent: Phase 2's prompt tells the
+  writer that `SPEC.md` is "an implementation spec for an upcoming change", which a system-wide tech
+  spec is not, so the skill as published decomposed the wrong document. Phase 1 now also states the
+  real MCP contract — the request enters through `definition.instructions` (`generate_document` takes
+  no request argument), the result is `document.sections[]` with no assembled markdown, the 25,000-token
+  response cap forces paged fetches, a frozen `progress` value is not a stall signal, and no model is
+  reported. Phase 3 gains an explicitly-labeled ordering hypothesis (constraint tickets before the
+  feature ticket, the blocking set widening as each lands) and the matching `Not measured` disclosure.
+  Phases 2 and 4 and both reference files are unchanged.

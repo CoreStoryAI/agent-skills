@@ -1,6 +1,6 @@
 ---
 name: constraint-tickets
-description: "Turn a CoreStory spec into constraint-style tickets, one constraint per ticket, and generate the GitHub Copilot CLI completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to turn this spec into tickets, spec to tickets, break the spec into tickets, decompose the spec, one constraint per ticket, a completion hook, a stop hook, an agentStop hook, a Copilot hook, a refusal gate, or to not let the agent finish until a constraint holds; or for any request to make an agent act on facts a feature request never states."
+description: "Turn a CoreStory spec into constraint-style tickets, one constraint per ticket, and generate the GitHub Copilot CLI completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to turn this spec into tickets, spec to tickets, break the spec into tickets, decompose the spec, one constraint per ticket, a completion hook, a stop hook, an agentStop hook, a Copilot hook, a refusal gate, or to not let the agent finish until a constraint holds; generate the implementation spec from this feature request, spec from a feature request then tickets; or for any request to make an agent act on facts a feature request never states."
 license: MIT
 ---
 
@@ -28,8 +28,10 @@ change must have or preserve ("a partial refund must not mark the whole order re
 
 **Where the constraints come from.** Agents do not inherit a system's constraints. Their exploration
 starts at the ticket and radiates outward, inside one session, so it reaches what it can walk to and
-nothing else. CoreStory's spec is generated from the whole system ahead of any task, so it can carry
-facts a task-directed walk never reaches. This skill is the conversion step between the two.
+nothing else. CoreStory's index is built from the whole system ahead of any task; the implementation
+spec it generates for a request draws on that index, which is how the spec can name a constraint the
+request never states. This skill is the conversion step between that generated spec and tickets an
+agent will act on.
 
 ## First run
 
@@ -43,8 +45,8 @@ Install: `claude plugin marketplace add corestoryai/agent-skills` then
 the spec into constraint tickets". It is not a Copilot CLI skill; Copilot CLI only runs the hook it
 produces.
 
-Out: `SPEC.md` and its hash, `TICKETS.md`, one frozen file per ticket, `PROVENANCE.md`,
-`CONSTRAINTS.md`, a gate script, an `agentStop` script, and a hooks JSON.
+Out: `REQUEST.md`, `definition.json`, `SPEC.md` and its hash, `TICKETS.md`, one frozen file per
+ticket, `PROVENANCE.md`, `CONSTRAINTS.md`, a gate script, an `agentStop` script, and a hooks JSON.
 
 By hand afterward: write every assertion yourself — the skill ships no fixture and no build command.
 Run the validations in Phase 4 before arming the hook. Review the tickets.
@@ -52,23 +54,85 @@ Run the validations in Phase 4 before arming the hook. Review the tickets.
 ## Prerequisites
 
 - A CoreStory project with completed ingestion, reachable over the CoreStory MCP server
-  (`list_projects`, `get_project_techspec`, `get_project_prd`, `semantic_search`, `send_message`).
+  (`list_projects`, `refine_document_definition`, `generate_document`,
+  `get_document_generation_result`, `get_project_techspec`, `get_project_prd`, `semantic_search`,
+  `send_message`). Phase 1 runs on the first four. `get_project_techspec` and `get_project_prd` are
+  for the human reviewer in Phase 2 — they are not Phase 1's input.
 - For the hook: GitHub Copilot CLI on the machine that will run the agent, and a way to execute a
   check against a working tree — a build command and a fixture, test, or script that returns
   pass/fail. This skill does not supply those; the user writes them for their repository.
 
-## Phase 1 — Get the spec, and only the spec
+## Phase 1 — Generate the spec from the feature request, and only the spec
 
-1. `list_projects` → pick the project. `get_project_techspec` with `sections_only=true` first, then
-   fetch the sections that describe current behavior, affected components, risks, failure modes, and
-   acceptance criteria. If a feature request exists, keep it in a separate file; the tickets below are
-   written from the spec's *constraints*, not from the request's wording.
-2. Assemble the fetched sections into one `SPEC.md`, in the order the spec lists them, each under its
-   own heading, in an otherwise empty working directory. **No source tree in that directory, and no
-   other files.** Two operators who assemble the sections differently will produce different files
-   and different hashes; record the section list you used in `PROVENANCE.md`.
-3. Hash it: `shasum -a 256 SPEC.md`. Record the hash in `PROVENANCE.md`. Do not paste the hash into
-   the tickets themselves — a ticket that carries attached context fails rule 2 below.
+**Every CoreStory MCP tool below takes a required `context` string of 15-25 words, third person,
+describing why the call is being made. It is analytics metadata and does not affect generation.**
+
+**Input.** The feature request, verbatim, as the requester wrote it. Save it as `REQUEST.md` in an
+otherwise empty working directory and hash it (`shasum -a 256`). Do not edit it, expand it, or add
+what you know about the system. The point of the exercise is to measure what the intelligence adds
+to the request as written.
+
+1. `list_projects` → pick the project holding the repository the change will land in, and confirm
+   ingestion has finished — require `ingestion_status == "completed"` explicitly. Older projects
+   return `null` rather than `"completed"` or `"failed"`; `null` is undocumented and is not the same
+   as failure, but it is not confirmation either, so do not run on one. If CoreStory is unreachable,
+   stop and say so (see the note at the top of this file).
+2. `refine_document_definition` with five custom sections, in this order, names verbatim:
+   **Scope · Affected Components · Constraints and Invariants · Risks and Failure Modes · Acceptance
+   Criteria.** Each section's one-line description asks for the system's *current* behavior relevant
+   to the request, with evidence back to source, and states that the request is the only input.
+   **Do not add a section that names a subsystem.** The measured definition named none; a section
+   called "Tax handling" puts the answer in the question. Pass the verbatim text of `REQUEST.md`
+   in the definition's top-level `instructions` field: that is the only channel the request has to
+   the generator —
+   `generate_document` takes no separate request argument. The tool returns
+   `{"valid": true, "definition": {...}}`; save the inner `definition` object as `definition.json`
+   and hash it. The server hands back more than it was sent — per-section fields and a top-level
+   `options` block the caller never supplied, some of which `generate_document`'s own schema then
+   rejects. So what you send on is the returned definition with those stripped, and `definition.json`
+   is a hash of what was **sent**, not of what the server validated. Record which fields you stripped.
+3. `generate_document` with `project_id` and the validated definition (which already carries the
+   request text in its `instructions`). Record the `run_id` the moment it is returned. Generation
+   is long-running, and the wall time varies with the repository: three runs on this definition
+   took 1038 s and 629 s on Shopizer and 468 s on a small VB6 repository. Budget for twenty minutes
+   and do not read a slow run as a failed one. Poll
+   `get_document_generation_result` until `status` is `complete` or `failed`; while running it also
+   returns a `progress` percentage. **A `progress` number that stops moving is not a stall
+   signal** — it has been seen frozen at the same value across four consecutive polls spanning six
+   minutes, and non-monotonic within a single run, both times on runs that completed normally. The
+   stopping rule is `status`, not `progress`: a run still `queued` after several polls is not
+   progressing — say so and stop. **Do not substitute another document.**
+4. The result carries no assembled markdown. `document.sections` is a list of
+   `{name, level, content, structured_content, sources, subsections}`; assemble `SPEC.md` by
+   writing `document.title` as a level-1 heading, then each section's `name` as a heading at its
+   `level` followed by its `content`, verbatim. Do not edit the content. Two operators who
+   assemble the sections differently produce different bytes and different hashes from the same
+   run — the assembly rule above exists to make the hash reproducible, so state in `PROVENANCE.md`
+   that you followed it. **A poll with no
+   `sections` filter exceeds the server's 25,000-token response cap and returns a truncation
+   notice in place of the document** — fetch the sections one at a time with the `sections`
+   argument, or page with `limit`/`offset`. Record in `PROVENANCE.md`: the `REQUEST.md` hash, the
+   `definition.json` hash, `run_id`, `document.id` (there is no top-level `document_id`),
+   `metadata.generated_at`, `metadata.generation_time_seconds`, and `metadata.template_hash` —
+   the only version-like field the result carries. **The tool reports no model.** Also record the
+   `SPEC.md` hash.
+5. Check before continuing: the **Scope** section of `SPEC.md` names the thing the request asked
+   for. If it does not, the generation did not take the request. Do not decompose it.
+6. **Do not use the project's standing tech spec (`get_project_techspec`) or PRD as `SPEC.md`.**
+   They describe the system, not the change, and Phase 2's prompt assumes an implementation spec for
+   an upcoming change. A person may consult them during the Phase 2 review. They are not the input.
+
+The directory holds `REQUEST.md`, `definition.json`, `SPEC.md`, `PROVENANCE.md` and nothing else.
+No source tree. Before Phase 2, move `SPEC.md` alone into a fresh directory: the decomposition
+invocation sees the spec and only the spec. The request's wording does not reach the ticket writer;
+the tickets are written from the spec's constraints.
+
+**What this step is measured to do, and not.** Generated from a four-sentence refund request with
+this definition, five independent specs named 9 to 11 of 12 pre-registered hazards at the level of
+the subsystem, and 4 to 6 of 12 at the level of a constraint specific enough to act on (EVIDENCE B1).
+The two subsystems the request never named — tax and notification — were the two the spec almost
+never reached (B2). Generation starts from the request, so it inherits some of the request's blind
+spots. It is where the measured tickets came from; it is not a guarantee of completeness.
 
 ## Phase 2 — Decompose into constraint tickets
 
@@ -121,20 +185,54 @@ used to assemble `SPEC.md`, the model and settings that ran the decomposition, a
 sections each ticket draws on (most draw on several; list them all). **Say plainly in
 `PROVENANCE.md` which tickets are spec-derived and which, if any, a person wrote.**
 
-## Phase 3 — Split the list: tickets, assertions, flags
+## Phase 3 — Route the list: tickets, assertions, flags
 
-The list is the ticket set from Phase 2. One constraint per ticket, so the tickets are the list.
-Every constraint on it goes to at least one of three places:
+The list is the constraint set from Phase 2 — one statement per constraint. Each constraint is routed
+by three questions, and a constraint can land in more than one place:
 
-- **Ticket** — the constraint is work someone must do. Every constraint gets one.
-- **Assertion** — the constraint is *checkable* against a working tree (a fixture, a test that runs
-  against production code paths, a static predicate). These become the gate.
-- **Flag** — the constraint is real but out of scope for the ticket the agent is working. The hook
-  surfaces it as an advisory instead of refusing (measured: 4 of 5 runs surfaced a pre-existing defect
-  during unrelated work with the flag armed, 0 of 5 without it).
+1. **Does the code violate it today, or must the change newly satisfy it?** If yes, it is work: it
+   becomes a **ticket**, one constraint per ticket. If the code already satisfies it, it does not
+   become a ticket — a ticket that says "keep X true" is a check, not work.
+2. **Can it be checked against a working tree** — a fixture, a test that runs against production code
+   paths, a static predicate? If yes, it becomes an **assertion** in the gate, whether or not it also
+   became a ticket. An already-satisfied, checkable constraint becomes an assertion only: it is
+   protected while the change lands.
+3. **Is it in scope for the ticket the agent is working?** In scope, the assertion **blocks**. Out of
+   scope, it **flags** — the hook surfaces it as an advisory instead of refusing (measured: 4 of 5
+   runs surfaced a pre-existing defect during unrelated work with the flag armed, 0 of 5 without it).
 
-Write the split as a table in `CONSTRAINTS.md`: constraint · ticket file · assertion (yes/no, how) ·
-flag-only (yes/no). This table is the artifact the architecture rests on.
+So a constraint may be a ticket *and* an assertion (violated today and checkable — the refund label,
+the tax base); an assertion only (already true and checkable); a ticket only (violated, but not
+checkable by a fixture — "the customer is notified"; a person reviews it); or a flag only (outside the
+current ticket).
+
+Write the routing as a table in `CONSTRAINTS.md`: constraint · satisfied today (yes/no) · ticket file ·
+assertion (yes/no, how) · block / flag, per ticket. This table is the artifact the architecture rests
+on. Ticket and assertion are the two measured mechanisms; the routing beyond them — assertion-only,
+ticket-only, flag — is the design the results imply, not a measured result.
+
+**Order of work.** Work the constraint tickets before the feature ticket, and work each one alone:
+its own agent session, its own change, merged before the next begins. The reasoning: constraints on
+pre-existing code are the ground the feature stands on — fix how a refund is recorded before building
+a cap that reads the record. Each session sees only its own ticket, but it works on a tree that
+already holds the previous fixes, so the tree does the coordination the tickets do not. Constraints
+that describe the feature's *new* behavior cannot come first — there is nothing yet to constrain —
+so they go into the feature ticket's gate as blocking assertions rather than into tickets that
+precede it.
+
+**The gate follows the order.** On a constraint ticket, the gate blocks on that ticket's assertion
+only and carries every other assertion in flag mode; a blocking gate armed against constraints the
+agent was not asked to fix refuses every turn. Once a constraint ticket has merged, its assertion
+flips from flag to block on every later ticket — it is now a known-true property of the tree, and
+the gate's job is to keep it true. On the feature ticket, block on every landed constraint plus the
+new-behavior constraints; flag the rest. Rule 4 makes this safe: an assertion becomes blocking only
+after it has passed on a known-good tree, and the merge of its constraint ticket is exactly when
+that becomes true.
+
+This ordering is a hypothesis. Nothing about sequencing has been measured; the results behind this
+skill are single tickets and single-assertion gates. It is stated here because the alternative —
+constraint tickets and the feature ticket landing in no particular order, none aware of the others —
+has an obvious failure mode, and because the gate design above is what the measured results imply.
 
 ## Phase 4 — Generate the completion hook
 
@@ -161,7 +259,8 @@ Follow `references/hook-template.md` exactly. In summary:
    fix will refuse a correct one.
 5. **Scope the blocking gate to the ticket it was written for.** Off that ticket, install the flag
    mode (`postToolUse` advisory) instead; a blocking gate armed against pre-existing defects the
-   agent was not asked to fix refuses every turn.
+   agent was not asked to fix refuses every turn, and widen the blocking set as constraint tickets
+   land (Phase 3, Order of work).
 
 ## What this skill can and cannot claim
 
@@ -177,7 +276,10 @@ Follow `references/hook-template.md` exactly. In summary:
   off-path tax defect at constraint level, though the generator surfaced that tax subsystem in about
   one draft in five; that the hook produces *correct* code beyond the assertions it checks. A
   passing gate is not a working system: one assertion scored 15 of 15 while nine runs shipped a
-  defect one line above it. Assert the behavior, not the symptom.
+  defect one line above it. Assert the behavior, not the symptom. Also not measured: that working
+  the constraint tickets before the feature ticket produces a better result than any other order, or
+  that a landed constraint's assertion, flipped to blocking, prevents a later ticket from undoing
+  it. Both are the design the results imply; neither has a cell.
 - Five identical diffs mean the task admitted exactly one patch. That is reassuring for correctness
   and says nothing about a rate.
 
