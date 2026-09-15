@@ -1,6 +1,6 @@
 ---
 name: constraint-tickets
-description: "Turn a CoreStory spec into constraint-style tickets, one constraint per ticket, and generate the GitHub Copilot CLI completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to turn this spec into tickets, spec to tickets, break the spec into tickets, decompose the spec, one constraint per ticket, a completion hook, a stop hook, an agentStop hook, a Copilot hook, a refusal gate, or to not let the agent finish until a constraint holds; generate the implementation spec from this feature request, spec from a feature request then tickets; or for any request to make an agent act on facts a feature request never states."
+description: "Turn a CoreStory spec into constraint-style tickets, one constraint per ticket, and generate the completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to turn this spec into tickets, spec to tickets, break the spec into tickets, decompose the spec, one constraint per ticket, a completion hook, a stop hook, an agentStop hook, a Copilot hook, a refusal gate, or to not let the agent finish until a constraint holds; generate the implementation spec from this feature request, spec from a feature request then tickets; or for any request to make an agent act on facts a feature request never states."
 license: MIT
 ---
 
@@ -9,9 +9,19 @@ license: MIT
 **If you do not detect that you have access to CoreStory (e.g., `list_projects` fails or is unavailable), ask the user to verify that their MCP or API connection is properly configured and that this repository has been ingested. If the user has not yet created a CoreStory account, direct them to create one and upload their repo at [app.corestory.ai](https://app.corestory.ai).**
 
 **What this is and where it runs.** This is a skill for Claude Code, or any agent that loads Agent
-Skills, and it produces artifacts for **GitHub Copilot CLI**: a set of tickets, a gate script, an
-`agentStop` script, and a hooks JSON. Copilot CLI does not load this skill. It only runs the hook the
-skill produces, after a person has reviewed and installed it.
+Skills. It produces a set of tickets, a gate script, and a completion hook that binds the gate to
+whichever harness will run the coding agent. The harness that runs the coding agent does not load
+this skill; it only runs the hook the skill produces, after a person has reviewed and installed it.
+
+**The gate is harness-neutral; only the binding is not.** The gate script — its exit-code contract,
+its pristine worktree, its fixture, its message — is a plain executable and cares about no harness.
+What differs per harness is the fifteen lines that bind it: which event fires on completion, and how
+that event says *block*. `references/hook-template.md` gives the neutral contract plus one binding
+per harness. **GitHub Copilot CLI is the only binding behind which there are measurements.** A
+Claude Code binding is given and rests on documented behavior, not measured behavior. The two are
+close to inverses — on Copilot CLI a bare non-zero exit blocks nothing and you must emit
+`{"decision":"block"}`; on Claude Code exit code 2 is itself the block — so do not carry a hook from
+one to the other unchanged.
 
 Agents do the task they are given and treat everything else as reference. A constraint handed over
 *alongside* a task — as a spec in the working tree, a search index, a chat answer, or an instruction
@@ -33,17 +43,68 @@ spec it generates for a request draws on that index, which is how the spec can n
 request never states. This skill is the conversion step between that generated spec and tickets an
 agent will act on.
 
+## When not to use this skill
+
+The input this skill is built for is **a short feature request written by a person, which does not
+state its own constraints**. "Add Google SSO authentication to this application" is the shape. The
+value the skill adds is naming what such a request leaves unsaid. Given an input that already states
+its constraints, or one whose constraints cannot be carried by a ticket, the skill adds nothing and
+its measured shape does not apply.
+
+Stop and route elsewhere when any of these holds:
+
+- **A framework, platform, or runtime migration, or a lockstep dependency upgrade.** Spring 6 → 7,
+  Java 8 → 17, a JDK or database major version. These fail the skill on three counts at once: the
+  checkable constraints are "it builds" and "the existing suite passes", which is not what the gate
+  does; no single constraint ticket leaves a tree that builds, which breaks the one-ticket-at-a-time
+  order of work in Phase 3; and the blast radius is the whole repository rather than one behavior.
+  → `code-modernization`, or `codebase-assessment` to size it first.
+- **A bot-generated issue** — a CI failure report, a dependency-bot PR, a scanner finding. The body
+  is a machine artifact, not a request, and Phase 1 forbids editing it. A CI report saved verbatim
+  as `REQUEST.md` sends a build log into the generator's `instructions`, and if it carries its own
+  agent workflow the agent may follow the issue instead of this skill. → `bug-resolver` for a real
+  defect; for a CI failure, fix the build.
+- **The request already states its constraints** — a well-written user story with acceptance
+  criteria. There is nothing unsaid for the index to supply. Decompose it directly.
+- **A constraint that no fixture can check**, and no other constraint in the set can either. The
+  gate is the half of this skill that was measured to move a rate. With nothing checkable, you have
+  tickets and no gate, which is worth doing but is not this skill's result.
+- **No completed CoreStory ingestion of the repository the change lands in.** Phase 1's whole
+  premise is the index. Without it, the generator is guessing from the request, which is the thing
+  the skill exists to improve on.
+
+**What "verbatim request" means for an issue tracker.** Take the issue **body** only, as markdown,
+excluding the title, comments, labels, and any CI or bot content appended to it. If removing bot
+content would leave less than a couple of sentences of human writing, that issue is not an input to
+this skill — see the second bullet above. If you cannot get to a verbatim human request without
+editing, stop and ask the requester for one. Record in `PROVENANCE.md` exactly what you took and
+what you left, with the issue URL.
+
 ## First run
 
-You need: a CoreStory project with finished ingestion, reachable over MCP; GitHub Copilot CLI on the
-machine that will run the coding agent; and the target repository's own build toolchain — for a
-Maven/Java repository, a warm local Maven cache and a JDK pinned to the version the build targets,
-not whatever `mvn` picks up from the shell.
+You need: a CoreStory project with finished ingestion, reachable over MCP; a harness with a
+completion hook on the machine that will run the coding agent; and the target repository's own build
+toolchain — for a Maven/Java repository, a warm local Maven cache and a JDK pinned to the version the
+build targets, not whatever `mvn` picks up from the shell.
 
 Install: `claude plugin marketplace add corestoryai/agent-skills` then
 `claude plugin install corestory@corestory`, and invoke it from Claude Code by asking to "decompose
-the spec into constraint tickets". It is not a Copilot CLI skill; Copilot CLI only runs the hook it
-produces.
+the spec into constraint tickets". The harness that runs the coding agent does not load this skill;
+it only runs the hook this skill produces.
+
+**Preflight — check these before Phase 1, not at Phase 4.** Phases 1–3 need only CoreStory, so an
+operator can do a day's work and reach the gate before discovering the machine cannot build one.
+Check and report all five up front, and say which phases can proceed without them:
+
+| check | why |
+|---|---|
+| the target repo is a **git clone with a `HEAD`**, not a copied directory | the gate diffs the live tree against `HEAD`; a copy has nothing to diff |
+| the repo's **build tool** is installed and on `PATH` | the gate builds in its own worktree |
+| a **JDK (or runtime) pinned to what the build targets**, not the newest installed | a Java 17 build under JDK 21 fails in the gate and not in the agent's session |
+| the **harness that will run the coding agent** is installed, and its completion hook is supported | the binding is harness-specific; see `references/hook-template.md` |
+| you can **run the repo's build once, green, before any change** | a gate cannot distinguish your change from a build that was already broken |
+
+Missing any of the first three blocks Phase 4 only. Phases 1–3 can go ahead and produce the tickets.
 
 Out: `REQUEST.md`, `definition.json`, `SPEC.md` and its hash, `TICKETS.md`, one frozen file per
 ticket, `PROVENANCE.md`, `CONSTRAINTS.md`, a gate script, an `agentStop` script, and a hooks JSON.
@@ -58,9 +119,9 @@ Run the validations in Phase 4 before arming the hook. Review the tickets.
   `get_document_generation_result`, `get_project_techspec`, `get_project_prd`, `semantic_search`,
   `send_message`). Phase 1 runs on the first four. `get_project_techspec` and `get_project_prd` are
   for the human reviewer in Phase 2 — they are not Phase 1's input.
-- For the hook: GitHub Copilot CLI on the machine that will run the agent, and a way to execute a
-  check against a working tree — a build command and a fixture, test, or script that returns
-  pass/fail. This skill does not supply those; the user writes them for their repository.
+- For the hook: a harness with a completion hook on the machine that will run the agent, and a way to
+  execute a check against a working tree — a build command and a fixture, test, or script that
+  returns pass/fail. This skill does not supply those; the user writes them for their repository.
 
 ## Phase 1 — Generate the spec from the feature request, and only the spec
 
@@ -72,11 +133,21 @@ otherwise empty working directory and hash it (`shasum -a 256`). Do not edit it,
 what you know about the system. The point of the exercise is to measure what the intelligence adds
 to the request as written.
 
+0. **Establish which CoreStory server you are talking to, and say so.** Every CoreStory organization
+   exposes the *same* tool names (`list_projects`, `generate_document`, and the rest), and an agent
+   can have several connected at once without any of them being distinguishable by name — Claude Code
+   loads claude.ai account connectors into every project, so a project-local server is easily the
+   third of three. Nothing downstream would reveal a spec generated against the wrong organization.
+   **If more than one CoreStory server is reachable, stop and ask the user which one to use.** Do not
+   pick. Record the server name, its transport and URL (or the connector it came from), and the
+   organization it belongs to, in `PROVENANCE.md`, before the first call.
 1. `list_projects` → pick the project holding the repository the change will land in, and confirm
    ingestion has finished — require `ingestion_status == "completed"` explicitly. Older projects
    return `null` rather than `"completed"` or `"failed"`; `null` is undocumented and is not the same
    as failure, but it is not confirmation either, so do not run on one. If CoreStory is unreachable,
-   stop and say so (see the note at the top of this file).
+   stop and say so (see the note at the top of this file). Record `project_id` and the project's
+   name alongside the server, and confirm with the user that the project is the repository the
+   change will land in — a name collision across organizations is exactly the failure step 0 guards.
 2. `refine_document_definition` with five custom sections, in this order, names verbatim:
    **Scope · Affected Components · Constraints and Invariants · Risks and Failure Modes · Acceptance
    Criteria.** Each section's one-line description asks for the system's *current* behavior relevant
@@ -85,12 +156,34 @@ to the request as written.
    called "Tax handling" puts the answer in the question. Pass the verbatim text of `REQUEST.md`
    in the definition's top-level `instructions` field: that is the only channel the request has to
    the generator —
-   `generate_document` takes no separate request argument. The tool returns
-   `{"valid": true, "definition": {...}}`; save the inner `definition` object as `definition.json`
-   and hash it. The server hands back more than it was sent — per-section fields and a top-level
-   `options` block the caller never supplied, some of which `generate_document`'s own schema then
-   rejects. So what you send on is the returned definition with those stripped, and `definition.json`
-   is a hash of what was **sent**, not of what the server validated. Record which fields you stripped.
+   `generate_document` takes no separate request argument.
+
+   **Send `options: {"polish": false}`. This is not optional for this skill.** `polish` defaults to
+   **true**, and a polished section is rewritten end to end by a second LLM pass that never saw the
+   codebase — and **only the section's first 20,000 characters reach that pass; anything past them is
+   dropped from the result.** Both halves are wrong here. The rewrite puts prose between the index
+   and the ticket writer on a procedure whose entire premise is fidelity to what the index found,
+   and the truncation silently amputates the long sections — **Affected Components** and **Risks and
+   Failure Modes** are the two that run long, and they have been seen cut off mid-sentence in a
+   closing reference list. This truncation is **not** the 25,000-token response cap in step 4: that
+   one is a read-side limit you recover from by paging, this one drops the content before it is ever
+   stored, and no amount of paging brings it back. A section that arrives truncated was generated
+   truncated. Set the flag and the whole section is returned unpolished and uncut.
+
+   The tool returns `{"valid": true, "definition": {...}}`; save the inner `definition` object as
+   `definition.json` and hash it. The server hands back more than it was sent. Two different things
+   come back, and they are handled differently:
+   - **Per-section fields** the caller never supplied — `research_strategy` and `requires_signal`
+     among them — which `generate_document`'s own section schema then **rejects**. Strip these.
+   - **A top-level `options` block**, filled in with the server's defaults (`detail_level`,
+     `max_tokens_per_section`, `reference_validation`, and `polish`). **Do not strip this block** —
+     it is where your `"polish": false` lives, and `generate_document` accepts it. Confirm
+     `options.polish` reads `false` in what you send on. Per-section `polish` comes back as `null`,
+     meaning *inherit the global*, so the one top-level flag is enough; leave the nulls alone.
+
+   So what you send on is the returned definition with the rejected per-section fields stripped and
+   `options` intact, and `definition.json` is a hash of what was **sent**, not of what the server
+   validated. Record which fields you stripped, and record `options.polish` in `PROVENANCE.md`.
 3. `generate_document` with `project_id` and the validated definition (which already carries the
    request text in its `instructions`). Record the `run_id` the moment it is returned. Generation
    is long-running, and the wall time varies with the repository: three runs on this definition
@@ -111,11 +204,21 @@ to the request as written.
    that you followed it. **A poll with no
    `sections` filter exceeds the server's 25,000-token response cap and returns a truncation
    notice in place of the document** — fetch the sections one at a time with the `sections`
-   argument, or page with `limit`/`offset`. Record in `PROVENANCE.md`: the `REQUEST.md` hash, the
-   `definition.json` hash, `run_id`, `document.id` (there is no top-level `document_id`),
-   `metadata.generated_at`, `metadata.generation_time_seconds`, and `metadata.template_hash` —
-   the only version-like field the result carries. **The tool reports no model.** Also record the
-   `SPEC.md` hash.
+   argument, or page with `limit`/`offset`.
+
+   **Then check each section for a truncated tail** before you assemble. Read the last line of every
+   section: a section that ends mid-sentence, mid-path, or mid-list — rather than at a full stop —
+   was cut, and the two long sections (**Affected Components**, **Risks and Failure Modes**) are
+   where it shows up. Paging does not fix this one and re-fetching returns the same bytes. If you
+   find a cut tail, the run was generated with `polish` on (step 2); the content is gone from the
+   stored result and the only remedy is to regenerate with `"polish": false`. **Do not assemble a
+   `SPEC.md` from truncated sections and do not patch the gap by hand** — a spec the operator
+   completed is no longer a measurement of what the index supplied. Record in `PROVENANCE.md`: the
+   `REQUEST.md` hash, the `definition.json` hash, `run_id`, `document.id` (there is no top-level
+   `document_id`), `metadata.generated_at`, `metadata.generation_time_seconds`,
+   `metadata.template_hash` — the only version-like field the result carries — the value of
+   `options.polish` for the run, and the result of this tail check per section. **The tool reports no
+   model.** Also record the `SPEC.md` hash.
 5. Check before continuing: the **Scope** section of `SPEC.md` names the thing the request asked
    for. If it does not, the generation did not take the request. Do not decompose it.
 6. **Do not use the project's standing tech spec (`get_project_techspec`) or PRD as `SPEC.md`.**
@@ -126,6 +229,30 @@ The directory holds `REQUEST.md`, `definition.json`, `SPEC.md`, `PROVENANCE.md` 
 No source tree. Before Phase 2, move `SPEC.md` alone into a fresh directory: the decomposition
 invocation sees the spec and only the spec. The request's wording does not reach the ticket writer;
 the tickets are written from the spec's constraints.
+
+**Where these directories live.** "An otherwise empty working directory" is a constraint on what the
+decomposer can see, and where you put it decides whether that holds. Use this layout:
+
+```
+<repo>/constraint-tickets/runs/<date>-<slug>/     run artifacts; ADD TO .gitignore
+    phase1/   REQUEST.md  definition.json  SPEC.md  PROVENANCE.md
+    phase3/   TICKETS.md  CONSTRAINTS.md  tickets/NN-<slug>.txt
+~/corestory-constraint-tickets/decompose/<run>/   SPEC.md ALONE — outside the repo (Phase 2)
+~/corestory-constraint-tickets/gate/<run>/        gate, fixture, manifest — outside the repo (Phase 4)
+```
+
+Two rules make it work, and both have a measured reason:
+
+- **The Phase 2 decompose directory is outside the repository.** Inside it, the decomposer can reach
+  the source tree and will cite it, which breaks "name the area, never the site" — the rule that
+  isolation, and nothing else, enforces.
+- **The gate lives outside the tree the agent edits**, so the agent cannot read or rewrite the thing
+  judging it, and so the gate's own files never appear in the patch it judges.
+
+Run artifacts may sit inside the repo, gitignored, but **everything under `constraint-tickets/runs/`
+must be excluded from the patch the gate judges** — `SPEC.md` above all. A spec left readable in the
+working tree is the arm that converted 1 of 5; leaving it there while the gate runs recreates the
+weakest measured condition by accident. See `references/hook-template.md` §3 for the exclusion list.
 
 **What this step is measured to do, and not.** Generated from a four-sentence refund request with
 this definition, five independent specs named 9 to 11 of 12 pre-registered hazards at the level of
@@ -143,14 +270,38 @@ can see the source will cite it. The measured runs used a separate invocation wi
 directory and an opaque working directory. If you decompose inside your own session with the
 repository open, you are not running the measured procedure.
 
+**Isolation recipe.** Copy `SPEC.md` alone into `~/corestory-constraint-tickets/decompose/<run>/`,
+then start a fresh agent *in that directory*:
+
+| harness | how |
+|---|---|
+| **Claude Code** | `cd` to the directory and run `claude` there in a new terminal. Add `--strict-mcp-config` so no MCP server loads, and note that the session still reads `~/.claude/CLAUDE.md` and user-level memory. `HOME=$(mktemp -d) claude` sandboxes those too and is what the measured runs did. |
+| **Copilot CLI** | `cd` to the directory and run `copilot -p "$(cat ../decompose-prompt.txt)"`. `~/.copilot/instructions/` still loads unless `COPILOT_HOME` is pointed at an empty directory. |
+| **VS Code / an IDE agent** | Open the isolated folder as its own window. The workspace is then the folder, but user-level instructions and memory still load; this is close to the procedure, not the procedure. |
+
+The gap that survives every row but the sandboxed-`HOME` one is user-level instructions and memory.
+**Record in `PROVENANCE.md` which of these you used, and say plainly whether the home directory was
+sandboxed.** A decomposition run with the repository open is still useful output — it is just not a
+measured run, and the provenance should not let the two be confused later.
+
 **Do not read `references/ticket-examples.md` before writing.** It holds the measured exemplar for
 one specific constraint in one specific repository (Shopizer). A writer decomposing a Shopizer spec
 who has seen it is reproducing the exemplar, not deriving a ticket, and any demonstration of this
 skill on Shopizer is not independent derivation. Read it after the review step, as a check on
 register.
 
-Run the decomposition with this prompt, verbatim. Save the prompt text you used to
-`decompose-prompt.txt` so it can be hashed.
+Run the decomposition with this prompt, verbatim. **Use the shipped file — do not retype or
+copy-paste it out of this page.** `references/decompose-prompt.txt` is the canonical bytes:
+
+```
+sha256  3bdd16ddaee3cdb5daf0463fa73cd0e8dfab231b4fb8d162eded6f404234574c
+```
+
+Copy that file next to the isolated `SPEC.md` and verify the hash (`shasum -a 256`) before running.
+Phase 2 asks you to record the prompt's hash in `PROVENANCE.md`, and a hash is only worth recording
+if two operators can produce the same one: a prompt lifted out of the blockquote below picks up
+different line wraps, quote marks, and em dashes, and hashes differently every time. The text is
+reproduced here for reading. The file is what you run.
 
 > SPEC.md in this directory is an implementation spec for an upcoming change. It is the only material
 > you have; there is no source tree here to read. Read it in full, then decompose it into the set of
@@ -247,10 +398,15 @@ Follow `references/hook-template.md` exactly. In summary:
    runs the fixture there, and never runs the agent's own tests. **The gate script owns the verdict.**
    The fixture prints values and may always exit 0; never derive the gate's exit code from the
    fixture's. **Every error path blocks.** A gate that cannot verify must refuse, not pass.
-3. **An `agentStop` hook** that runs the gate and emits `{"decision":"block","reason":"<message>"}` on
-   any non-zero exit. Install it user-level, in `$COPILOT_HOME/hooks/` — `COPILOT_HOME` is the
-   directory Copilot CLI reads its configuration from, `~/.copilot` by default — not in the
-   repository the agent edits.
+3. **A completion-hook binding** that runs the gate when the agent tries to finish and turns a
+   non-zero exit into a refusal carrying the gate's message. The binding is the only harness-specific
+   part, it is about fifteen lines, and **the way it signals a block differs per harness — on Copilot
+   CLI a bare non-zero exit blocks nothing and you emit `{"decision":"block","reason":…}` from an
+   `agentStop` hook; on Claude Code exit code 2 from a `Stop` hook *is* the block and stderr is the
+   message.** Take the binding for your harness from `references/hook-template.md` §2; do not port
+   one across. Install it **user-level and outside the repository the agent edits**
+   (`$COPILOT_HOME/hooks/`, default `~/.copilot`; or `~/.claude/settings.json`), so the agent can
+   neither read nor delete the thing judging it.
 4. **Validate both ways before arming**, and record all six results: the broken tree → BLOCK; a
    known-good fix → PASS; a directory that is not this project → PASS (out of scope); the fixture
    renamed or edited → TAMPER; the reference repository pointed at a nonexistent path → BLOCK with a
@@ -258,9 +414,15 @@ Follow `references/hook-template.md` exactly. In summary:
    case that was already correct → BLOCK with its own message. A gate that has not passed a known-good
    fix will refuse a correct one.
 5. **Scope the blocking gate to the ticket it was written for.** Off that ticket, install the flag
-   mode (`postToolUse` advisory) instead; a blocking gate armed against pre-existing defects the
+   mode (a post-tool advisory) instead; a blocking gate armed against pre-existing defects the
    agent was not asked to fix refuses every turn, and widen the blocking set as constraint tickets
    land (Phase 3, Order of work).
+6. **Re-run validation on the harness you will actually arm.** The six rows in step 4 test the gate,
+   which is harness-neutral. They do not test the binding. Confirm separately, on your harness, that
+   a blocking verdict really stops the agent and that the message reaches it — the failure mode is a
+   binding that fails *open*, where the gate correctly returns 1 and the agent finishes anyway
+   having been told nothing. Only the Copilot CLI binding has been measured; treat any other as
+   unverified until you have watched it refuse.
 
 ## What this skill can and cannot claim
 
@@ -282,6 +444,16 @@ Follow `references/hook-template.md` exactly. In summary:
   it. Both are the design the results imply; neither has a cell.
 - Five identical diffs mean the task admitted exactly one patch. That is reassuring for correctness
   and says nothing about a rate.
+- **Every measured cell was run against Copilot CLI.** No result here was produced on Claude Code, in
+  VS Code, or on any other harness. The gate is harness-neutral and the ticket results are about
+  ticket text rather than about a harness, so both should carry over; that expectation has no cell
+  behind it. The binding certainly does not carry over — see Phase 4 step 6.
+- **`polish` was not a controlled variable.** Phase 1 now requires `"polish": false`, because a
+  polished section is rewritten by a second model and truncated at 20,000 characters. Which setting
+  the measured runs used is not recorded, and the default is `true`. So the spec numbers above
+  (9–11 of 12, 4–6 of 12) may describe polished specs. That does not put the ticket and gate results
+  in question — those were measured downstream of a fixed spec — but it does mean the spec-quality
+  figures have not been reproduced under the setting the skill now mandates.
 
 Never present output of this skill as verified. Present it as tickets and a gate, in the shape that
 was measured to work, ready for a person to review.
@@ -302,11 +474,25 @@ Found when a stranger reproduced the skill from its text alone. Listed as limits
   launch-order selection rule for the case where more than one decomposition exists.
 - **The exit code and integrity manifest do not protect against a regenerated manifest.** The
   manifest cannot be in the manifest.
+- **Only the Copilot CLI binding has been run.** The Claude Code binding in the template is built
+  from documented hook behavior — `Stop` blocks on exit code 2 and the hook's stderr reaches the
+  model — and has not been watched refusing a real session. Whether Claude Code's `Stop` also accepts
+  a `{"decision":"block","reason":…}` JSON shape is not settled here, which is why the binding uses
+  exit 2 and stderr, the path the documentation states plainly.
+- **No binding exists for VS Code or other IDE agents.** VS Code's agent hooks are in Preview and its
+  documentation does not describe a completion event equivalent to `agentStop`. Phases 1–3 work
+  there; Phase 4 does not have a recipe.
+- **The isolation recipe does not fully isolate outside the sandboxed-`HOME` row.** User-level
+  instruction files and memory still load in every other variant.
 
 ## References
 
 - `references/ticket-examples.md` — the 593-byte ticket that converted 5 of 5, a second measured
   ticket, the spec passage that did *not* convert when attached, and a hand-written ticket for an
   off-path defect. Read after writing, not before.
-- `references/hook-template.md` — hooks JSON, the fail-closed `agentStop` script skeleton, the gate
-  contract, the six-row validation checklist, and the Copilot CLI behaviors measured on 1.0.80–1.0.82.
+- `references/hook-template.md` — the harness-neutral gate contract, one binding per harness
+  (Copilot CLI, measured; Claude Code, documented), the fail-closed script skeletons, the six-row
+  validation checklist, and the Copilot CLI behaviors measured on 1.0.80–1.0.82.
+- `references/decompose-prompt.txt` — the Phase 2 prompt, canonical bytes,
+  sha256 `3bdd16ddaee3cdb5daf0463fa73cd0e8dfab231b4fb8d162eded6f404234574c`. Run this file; do not
+  retype the prompt.

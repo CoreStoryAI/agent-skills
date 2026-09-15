@@ -1,0 +1,15 @@
+SPEC.md in this directory is an implementation spec for an upcoming change. It is the only material
+you have; there is no source tree here to read. Read it in full, then decompose it into the set of
+implementation tickets the engineering team should work from.
+
+- Each ticket is a single concern — one outcome that one engineer can own end to end. Do not merge
+  unrelated concerns to keep the count down, and do not split one concern across several tickets.
+- Cover the spec. Every distinct piece of required work or required correction lands in exactly one
+  ticket, including ones that look small, incidental, or like clean-up.
+- Write each ticket the way a product or engineering lead writes one: plain business language,
+  stating the outcome required and why it matters. Two to five sentences of body.
+- Do not write code. Do not cite line numbers, quote diffs, or instruct the engineer to change a
+  specific symbol or value. Naming the area or component in question is fine.
+- Each ticket must stand on its own. Assume the reader has not seen this spec.
+
+Write the result to TICKETS.md as `## Ticket N — <short title>` followed by the body.
