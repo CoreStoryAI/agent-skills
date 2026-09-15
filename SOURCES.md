@@ -154,4 +154,20 @@ that its own example file hands a Shopizer writer the answer, or that the gate s
 fixture — owns the verdict. All four are now stated in the skill. Structural gaps it proposed but
 did not fix are listed in the skill's "Known limits" section.
 
-Source snapshot date: 2026-09-02; `constraint-tickets` added 2026-09-07.
+**Field-report corrections (2026-09-11 setup-and-review on a BroadleafCommerce fork, plus a first
+field run).** A second round of disclosures, from someone installing the skill rather than auditing
+its text. Two touch what the skill can claim:
+
+| Finding | What changed | Why it matters to the claims |
+| --- | --- | --- |
+| `polish` was never set, and defaults to `true` | Phase 1 now requires `options: {"polish": false}` | A polished section is rewritten by a second LLM that never saw the codebase, and only its first 20,000 characters survive. Which setting the measured runs used **is not recorded**, so the spec-quality figures (9–11 of 12, 4–6 of 12) may describe polished specs. The ticket and gate results were measured downstream of a fixed spec and are unaffected. |
+| Every measured cell ran on Copilot CLI | The gate/binding split is now explicit, and a Claude Code binding is shipped | The gate is harness-neutral and should carry over; that has no cell behind it. The binding demonstrably does not carry over — Copilot blocks on stdout JSON with exit 0, Claude Code blocks on exit 2 with stderr. The Claude Code binding is published as **documented, not measured**. |
+
+The remaining field findings are gaps rather than overstatements, and are fixed in place: no "when
+not to use" guidance (a Spring 6 → 7 upgrade issue was put through the skill before anything said it
+was the wrong input), no way to reproduce the Phase 2 prompt hash the skill asks operators to record,
+no rule for which CoreStory organization a spec was generated against, no prescribed run-file layout,
+a gate exclusion list covering three instruction files but none of the skill's own run artifacts, and
+Phase 4's toolchain prerequisites surfacing only at Phase 4. See the changelog for the full list.
+
+Source snapshot date: 2026-09-02; `constraint-tickets` added 2026-09-07, revised 2026-09-15.

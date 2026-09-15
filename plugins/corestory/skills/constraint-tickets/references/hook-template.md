@@ -1,14 +1,36 @@
-# Completion hook template — GitHub Copilot CLI
+# Completion hook template
 
-Everything here was measured on Copilot CLI 1.0.80–1.0.82 (Aug–Sep 2026). Re-verify the behaviors in
-the last section on the build you are running; the CLI auto-updates, and it changed under two of the
-measurements behind this file while they were still running.
-
-This template is a shape, not a finished gate. It gives the hooks contract, the step order, the
-fail-closed discipline, the `agentStop` script, and the validation rows. The assertion, the build
+This template is a shape, not a finished gate. It gives the gate contract, the step order, the
+fail-closed discipline, the binding scripts, and the validation rows. The assertion, the build
 command, the classpath, the JDK pin, and the fixture are yours to write for your repository.
 
-## 1. The hooks file
+**Two layers, and only one of them is harness-specific.**
+
+| layer | what it is | portable? |
+|---|---|---|
+| **The gate** (§3) | a plain executable: exit `0` pass · `1` block · `3` tamper · `4` could not run | **yes** — it is a script with an exit code and cares about no harness |
+| **The binding** (§1, §2, §2b) | ~15 lines wiring the gate to the harness's completion event | **no** — see below |
+
+Write the gate once. Then take the binding for the harness you are arming.
+
+**The bindings are close to inverses, so never port one across unchanged.** On Copilot CLI a bare
+non-zero exit blocks *nothing* — the turn ends and the model is told nothing — and you must emit
+`{"decision":"block","reason":…}` on stdout while exiting 0. On Claude Code the opposite holds: exit
+code **2** from a `Stop` hook is itself the block, and the hook's **stderr** is the message. A
+Copilot binding dropped into Claude Code exits 0 and never blocks; a Claude binding dropped into
+Copilot exits 2 and never blocks. Both failures are silent and both fail **open**.
+
+| harness | event | how it blocks | status |
+|---|---|---|---|
+| **GitHub Copilot CLI** (§1, §2) | `agentStop` | stdout `{"decision":"block","reason":…}`, exit 0 | **measured**, 1.0.80–1.0.82 |
+| **Claude Code** (§2b) | `Stop` | **exit code 2**, message on **stderr** | documented, **not measured** |
+| VS Code / IDE agents | — | no documented completion event | **no binding** |
+
+§1, §2 and §5 were measured on Copilot CLI 1.0.80–1.0.82 (Aug–Sep 2026). Re-verify the behaviors in
+§5 on the build you are running; the CLI auto-updates, and it changed under two of the measurements
+behind this file while they were still running.
+
+## 1. The hooks file — Copilot CLI binding
 
 User-level, outside any repository, so the agent cannot read or delete it:
 `$COPILOT_HOME/hooks/<name>.json`, where `COPILOT_HOME` is the directory Copilot CLI reads its
@@ -43,7 +65,7 @@ interactively, but in `-p` (non-interactive) mode it is **silently skipped** unl
   field was **not implemented** on 1.0.80 — the hook fires, the JSON is accepted, nothing reaches the
   model. Use `modifiedResult`. This template ships no flag-mode script.
 
-## 2. The `agentStop` script — fail closed
+## 2. The `agentStop` script — fail closed (Copilot CLI binding)
 
 ```bash
 #!/usr/bin/env bash
@@ -90,6 +112,87 @@ empty directory. The gate takes its "cannot run" path — which is why that path
 Export the gate's paths absolutely (`GATE_WORK`, `GATE_REPO`) before launching, and pin the baseline
 commit the pristine worktree is created from.
 
+## 2b. The Claude Code binding — `Stop`, exit 2
+
+**Not measured.** Built from documented behavior: `Stop` is listed as a blocking event whose exit-code-2
+effect is *"Prevents Claude from stopping, continues the conversation"*, and the documented rule for
+the message is *"the blocking message is the reason from your JSON's blocking decision when it makes
+one, and your stderr text otherwise."* This binding takes the stderr path, which the documentation
+states plainly, rather than a JSON `decision` shape for `Stop` that it does not. Watch it refuse once
+before you trust it (Phase 4 step 6).
+
+Config goes in **`~/.claude/settings.json`** — user-level, outside the repository the agent edits.
+`Stop` takes **no matcher**, and an `if` key would disable the hook entirely, since `if` is evaluated
+only on tool events.
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      { "hooks": [
+          { "type": "command",
+            "command": "/abs/path/gate/hooks/claude-stop.sh",
+            "timeout": 300 }
+      ] }
+    ]
+  }
+}
+```
+
+```bash
+#!/usr/bin/env bash
+# claude-stop.sh — Claude Code Stop binding.
+# FAIL CLOSED, INVERTED FROM COPILOT: here exit 2 blocks and stderr carries the message.
+# exit 0 lets the turn end, so every path that cannot verify must exit 2.
+set -uo pipefail
+export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"   # a hook inherits no login shell
+IN="$(cat)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GATE="$HERE/../gate.sh"
+GATE_WORK="${GATE_WORK:-$HOME/.corestory-gate}"        # export absolutely; see the sandboxed-HOME trap
+
+block() { printf '%s\n' "$1" >&2; exit 2; }            # <-- the ONLY difference that matters
+field() { printf '%s' "$IN" | python3 -c "import json,sys; print(json.load(sys.stdin).get('$1','') or '')" 2>/dev/null; }
+
+TREE="${CLAUDE_PROJECT_DIR:-}"; [ -n "$TREE" ] || TREE="$(field cwd)"; [ -n "$TREE" ] || TREE="$PWD"
+[ -d "$TREE" ] || block "GATE COULD NOT EXECUTE — no working tree to judge. Nothing was verified. Blocking rather than passing an unverified change."
+[ -r "$GATE" ] || block "GATE COULD NOT EXECUTE — gate script missing at $GATE. Nothing was verified. Blocking."
+
+OUT="$(bash "$GATE" --tree "$TREE" 2>/dev/null)"; RC=$?
+[ "$RC" = 0 ] && exit 0                       # the ONLY path that lets the turn end
+[ -n "$OUT" ] || OUT="GATE COULD NOT EXECUTE — the gate exited $RC without a message. Nothing was verified. Blocking."
+
+# Claude Code documents no block ceiling the way Copilot documents eight. Cap it here anyway: a Stop
+# hook that blocks forever is an agent that cannot hand the ticket back. Count per session.
+SID="$(field session_id)"; [ -n "$SID" ] || SID="nosession"
+CNT_FILE="$GATE_WORK/blocks.$SID"; mkdir -p "$(dirname "$CNT_FILE")"
+N=$(( $(cat "$CNT_FILE" 2>/dev/null || echo 0) + 1 )); echo "$N" > "$CNT_FILE"
+if [ "$N" -ge 8 ]; then
+  OUT="$OUT
+
+This is the last refusal this gate will raise this session. Fix the behaviour now or hand the ticket back."
+  printf '%s\n' "$OUT" >&2; exit 2
+fi
+block "$OUT"
+```
+
+Differences from the Copilot script worth reading twice, because each one fails open if missed:
+
+- **`block()` exits 2 and writes to stderr.** The Copilot version exits **0** and writes JSON to
+  stdout. Swapping them yields a hook that runs, reports nothing, and blocks nothing.
+- **Exit 0 means "let the turn end."** On exit 0, a hook's stderr goes to the debug log only and the
+  model never sees it — so a diagnostic printed on the success path is invisible, not helpful.
+- **`CLAUDE_PROJECT_DIR`**, not `COPILOT_PROJECT_DIR`.
+- **`session_id`**, not `sessionId`.
+- **`timeout` is seconds and sits on the hook object**, not `timeoutSec`.
+- Claude Code may expose a field for detecting that a Stop hook is already in the loop it caused.
+  This script does not rely on one; the session counter is what bounds it. If you confirm such a
+  field on your build, honour it as well — do not replace the counter with it.
+
+**Flag mode** on Claude Code is a `PostToolUse` hook that exits 2, since exit 2 is the documented way
+to put a warning in front of the model after a tool has already run. As on Copilot, flag mode must
+never exit non-zero for a reason other than the advisory itself.
+
 ## 3. The gate script — contract
 
 ```
@@ -111,8 +214,23 @@ What it does, in order — and each step is a place a gate has silently lied bef
    narrow, and a refactor silently takes the gate out of scope.
 3. **Capture, don't trust.** Diff the live tree against `HEAD` under a throwaway `GIT_INDEX_FILE` so
    the gate does not touch the agent's index, apply the patch to a **pristine worktree outside the
-   agent's directory**, and build there. Exclude the agent's own instruction files (`AGENTS.md`,
-   `SPEC.md`, `.github/instructions/`) from what is judged. Never run the agent's tests — they assert
+   agent's directory**, and build there. **Exclude every instruction file and every run artifact from
+   what is judged** — not just the ones an agent writes. The list is:
+
+   ```
+   AGENTS.md  CLAUDE.md  .github/instructions/  .github/copilot-instructions.md
+   SPEC.md  REQUEST.md  TICKETS.md  CONSTRAINTS.md  PROVENANCE.md  definition.json
+   constraint-tickets/            # the whole run tree: tickets/, decompose-prompt.txt, runs/
+   ```
+
+   The first line is the agent's own instruction surface; a gate that judges it lets an agent pass by
+   editing what it was told. The rest is this skill's own paperwork, and it is the easier mistake:
+   the run artifacts sit in the repository by default (Phase 1, *Where these directories live*), so a
+   `git diff` against `HEAD` sweeps them into the patch. Two things then go wrong. The build in the
+   pristine worktree can fail on files that are not code, which the gate reports as exit 4 — *could
+   not run* — for a change that was fine. And `SPEC.md` gets copied into the worktree the gate
+   builds, which is the "spec in the working tree" arm that converted **1 of 5**: the gate would be
+   recreating the weakest measured condition inside its own check. Never run the agent's tests — they assert
    the world in which the agent's bug cannot exist (two PR test files mocked the gateway into
    returning the correct type that production stamps wrong).
 4. **Run the fixture** you wrote, against production code paths, and read the values it prints.
@@ -149,6 +267,16 @@ and a gate that passed a wrong one. Validate for both.
 Two more things the measured gates do that this template only names: a lock with a staleness break,
 because the CLI terminates hooks and leaves locks behind; and an append-only audit log, one row per
 run, so a sweep leaves a record of what the gate decided.
+
+**These six rows test the gate. None of them tests the binding.** They invoke `gate.sh` directly, so
+they pass identically whether the hook is wired correctly, wired to the wrong harness, or not
+installed at all. Add a seventh check, on the harness you will actually arm: with the gate armed and
+a known-broken tree, **start a real session, let the agent try to finish, and watch it be refused** —
+then confirm the gate's message appears in the agent's context rather than only in a log. This is
+the one failure that the rest of this template cannot catch, and it fails open: the gate returns 1,
+the binding swallows it, the agent finishes, and nothing anywhere says so. The two ways to produce
+it are in §2b's difference list, and both are one-character-class mistakes — stdout for stderr, exit
+0 for exit 2.
 
 ## 5. Copilot CLI behaviors measured (re-verify on your build)
 
