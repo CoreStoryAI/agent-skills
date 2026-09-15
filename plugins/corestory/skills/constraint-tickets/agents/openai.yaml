@@ -1,6 +1,6 @@
 interface:
   display_name: "CoreStory Constraint Tickets"
-  short_description: "One-constraint tickets and a Copilot CLI completion hook"
+  short_description: "One-constraint tickets and a completion hook that gates the agent"
   default_prompt: "Use $constraint-tickets to decompose this CoreStory spec into constraint tickets and generate the completion hook."
 policy:
   allow_implicit_invocation: true
