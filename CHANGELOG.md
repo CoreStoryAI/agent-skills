@@ -33,3 +33,7 @@
   reported. Phase 3 gains an explicitly-labeled ordering hypothesis (constraint tickets before the
   feature ticket, the blocking set widening as each lands) and the matching `Not measured` disclosure.
   Phases 2 and 4 and both reference files are unchanged.
+- Add a quantifier check to `constraint-tickets` Phase 3 (before a constraint is judged violated,
+  compare the claim being disproved to the constraint at its written strength). Measured on one fact
+  (misread 5 of 8 without, 0 of 8 with; real violations 12 of 12; followed 48 of 48); it did not
+  reproduce on 12 other facts, so it is offered as a low-cost guard, not a general fix.

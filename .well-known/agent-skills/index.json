@@ -41,7 +41,7 @@
       "type": "skill-md",
       "description": "Turn a CoreStory spec into constraint-style tickets, one constraint per ticket, and generate the GitHub Copilot CLI completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to turn this spec into tickets, spec to tickets, break the spec into tickets, decompose the spec, one constraint per ticket, a completion hook, a stop hook, an agentStop hook, a Copilot hook, a refusal gate, or to not let the agent finish until a constraint holds; generate the implementation spec from this feature request, spec from a feature request then tickets; or for any request to make an agent act on facts a feature request never states.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills/constraint-tickets/SKILL.md",
-      "digest": "sha256:873e282f38089f95124b82b36ea566a9aa866c80971e2f6e1d65e969c76d7052"
+      "digest": "sha256:a32ff7838eec1d3f4daf87c6950f8ad15a79845d62a3e9375472ead1e0a85a4f"
     },
     {
       "name": "corestory",

@@ -193,6 +193,21 @@ by three questions, and a constraint can land in more than one place:
 1. **Does the code violate it today, or must the change newly satisfy it?** If yes, it is work: it
    becomes a **ticket**, one constraint per ticket. If the code already satisfies it, it does not
    become a ticket — a ticket that says "keep X true" is a check, not work.
+
+   **Before you call a constraint violated, check the quantifier.** Test the constraint at the
+   strength it is written, no stronger and no weaker. A constraint that says a value is built "from"
+   X does not say "only from" X; one that says "when" does not say "only when". (1) Quote the
+   constraint verbatim and name the one claim your evidence contradicts. (2) If that claim uses a
+   stronger quantifier (only, all, every, never, always, exclusively, none) than the constraint
+   does, you have found evidence about a separate, nearby behavior, not a violation of this
+   constraint; record it as its own constraint if it matters, and do not route this one as a ticket.
+   (3) If the constraint itself states "only", "all", "every", "never" or "whenever", a counterexample
+   to that stated quantifier is a real violation; do not weaken the constraint to make it hold.
+   Write one line per constraint you judge, whatever the verdict:
+   `QUANTIFIER CHECK: constraint says: "<verbatim>" (<its quantifier, or "none stated">); claim
+   tested: <the claim the evidence supports>; comparison: <same strength | claim is stronger |
+   claim is weaker>.` The same rule applies to an assertion's pass/fail condition in Phase 4: it
+   must test the constraint at its written strength.
 2. **Can it be checked against a working tree** — a fixture, a test that runs against production code
    paths, a static predicate? If yes, it becomes an **assertion** in the gate, whether or not it also
    became a ticket. An already-satisfied, checkable constraint becomes an assertion only: it is
@@ -271,6 +286,11 @@ Follow `references/hook-template.md` exactly. In summary:
   assertion* and is entailed by construction (a gate pass implies the criterion passes), and the
   broader hazard-addressed measure in the gated arm was 12 of 15 against 13 of 15 without the gate;
   the flag — 4 of 5 surfaced a pre-existing defect during unrelated work, 0 of 5 without.
+- **Quantifier check (Phase 3):** a low-cost guard, not a proven general fix. On one fact that
+  agents tended to read as "only from", the misreading fell from 5 of 8 draws to 0 of 8 with the
+  check; 12 of 12 real violations were still found and the one-line check was written 48 of 48
+  times. Written to the same pattern, 12 other facts drew no misreading without it (0 of 44
+  baseline draws), so a general effect was not tested.
 - **Not measured:** that a ticket carrying two constraints converts both; that any generated spec
   names every constraint — five specs named 9 to 11 of 12 pre-registered hazards, and none named one
   off-path tax defect at constraint level, though the generator surfaced that tax subsystem in about
