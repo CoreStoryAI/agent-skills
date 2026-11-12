@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Local Business Rules"
+  short_description: "Extract source-verified business rules"
+  default_prompt: "Use $business-rules-extraction to extract source-backed rules from this workspace."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the workspace with: corestory mcp --path <workspace> --no-watch
+      transport: stdio

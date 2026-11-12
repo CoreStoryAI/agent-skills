@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "corestory-local": {
+      "command": "corestory",
+      "args": ["mcp", "--path", "${workspaceFolder}", "--no-watch"]
+    }
+  }
+}

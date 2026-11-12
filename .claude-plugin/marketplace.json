@@ -1,6 +1,6 @@
 {
   "name": "corestory",
-  "description": "Official CoreStory code-intelligence skills and MCP integration.",
+  "description": "Official CoreStory code-intelligence skills and MCP integrations.",
   "version": "1.0.0",
   "owner": {
     "name": "CoreStory"
@@ -9,7 +9,7 @@
     {
       "name": "corestory",
       "source": "./plugins/corestory",
-      "description": "CoreStory code-intelligence workflows and OAuth-connected MCP access.",
+      "description": "CoreStory code-intelligence workflows and an OAuth-connected MCP server.",
       "version": "1.0.0",
       "author": {
         "name": "CoreStory"
@@ -21,6 +21,24 @@
         "code-intelligence",
         "architecture",
         "modernization",
+        "testing"
+      ]
+    },
+    {
+      "name": "corestory-local",
+      "source": "./plugins/corestory-local",
+      "description": "Local-first CoreStory workflows backed by a workspace MCP server.",
+      "version": "1.0.0",
+      "author": {
+        "name": "CoreStory"
+      },
+      "homepage": "https://corestory.ai",
+      "repository": "https://github.com/corestoryai/agent-skills",
+      "category": "development",
+      "tags": [
+        "code-intelligence",
+        "local-first",
+        "codebase-navigation",
         "testing"
       ]
     }

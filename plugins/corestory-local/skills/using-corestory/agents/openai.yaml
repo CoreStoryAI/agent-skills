@@ -1,0 +1,14 @@
+interface:
+  display_name: "Using CoreStory locally"
+  short_description: "Navigate a local code graph with evidence"
+  default_prompt: "Use $using-corestory to investigate this codebase with CoreStory local tools."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the workspace with: corestory mcp --path <workspace> --no-watch
+      transport: stdio

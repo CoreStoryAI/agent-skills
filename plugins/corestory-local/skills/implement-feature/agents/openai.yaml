@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Local Feature Implementation"
+  short_description: "Build features with local graph evidence"
+  default_prompt: "Use $implement-feature to plan and implement this feature with CoreStory local tools."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the workspace with: corestory mcp --path <workspace> --no-watch
+      transport: stdio

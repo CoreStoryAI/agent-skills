@@ -1,0 +1,11 @@
+{
+  "name": "corestory-local",
+  "version": "1.0.0",
+  "description": "Local-first CoreStory code intelligence for an ingested workspace.",
+  "mcpServers": {
+    "corestory-local": {
+      "command": "corestory",
+      "args": ["mcp", "--path", "${workspacePath}", "--no-watch"]
+    }
+  }
+}

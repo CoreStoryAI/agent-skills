@@ -1,0 +1,17 @@
+{
+  "name": "corestory-local",
+  "version": "1.0.0",
+  "description": "CoreStory local code-intelligence workflows for a locally ingested codebase.",
+  "author": {
+    "name": "CoreStory",
+    "url": "https://corestory.ai"
+  },
+  "homepage": "https://corestory.ai",
+  "repository": "https://github.com/corestoryai/agent-skills",
+  "keywords": [
+    "code-intelligence",
+    "local-first",
+    "codebase-navigation",
+    "testing"
+  ]
+}

@@ -1,6 +1,7 @@
 # CoreStory Agent Skills
 
-Installable workflows that teach coding agents how to use [CoreStory](https://corestory.ai) for architecture-grounded software work. This repository packages 20 Agent Skills — 19 drawn from CoreStory's 18 public playbooks, and one, `constraint-tickets`, hand-authored from CoreStory's measured work on serving constraints to coding agents — and includes the CoreStory remote MCP server configuration.
+Installable workflows that teach coding agents how to use [CoreStory](https://corestory.ai) for architecture-grounded software work.
+It packages the OAuth-connected `corestory` plugin and the local-first `corestory-local` plugin.
 
 ## Before you install: the MCP URL is per-organization
 
@@ -13,6 +14,26 @@ https://app.corestory.ai/mcp/{your-org-slug}-{org-id}
 The URL identifies the organization, not you. Everyone in an org uses the same URL, and it never spans multiple orgs. Because of that, **this repository cannot ship a working URL** — you supply your own, copied from **CoreStory → Settings → IDE Integrations**. How you supply it differs by tool, so follow the matching section below.
 
 Authentication is browser-based OAuth against CoreStory's identity provider. There is no token to copy or store, and access is limited to the permissions of the signed-in CoreStory user.
+
+## Local-first CoreStory
+
+`corestory-local` starts the local CoreStory MCP server for the active workspace.
+It makes no network calls, needs no account, and sends no telemetry.
+The workspace must already have an ingested local corpus.
+
+```bash
+claude plugin marketplace add corestoryai/agent-skills
+claude plugin install corestory-local@corestory
+```
+
+The plugin starts `corestory mcp --path <workspace> --no-watch`.
+It includes `using-corestory`, `bug-resolver`, `implement-feature`, `business-rules-extraction`, `generate-tests`, and `corestory-ask`.
+
+For Gemini CLI, install this repository as an extension:
+
+```bash
+gemini extensions install https://github.com/corestoryai/agent-skills
+```
 
 ## Install
 
@@ -97,11 +118,14 @@ Skill layouts, manifests, and MCP capabilities differ across agents. A skills-on
 
 ## What this package can access
 
-The plugin declares one remote MCP server, `corestory`, whose URL you provide at install time as described above. The plugin itself declares no hooks and runs no local executable code. One skill, `constraint-tickets`, generates a GitHub Copilot CLI hook configuration and two shell scripts as files in your working directory for you to review and install by hand; nothing is installed or executed by the plugin. The MCP connection uses browser-based OAuth and is limited by the signed-in user's CoreStory permissions.
+The `corestory` plugin declares one remote MCP server whose URL you provide at install time.
+The `corestory-local` plugin starts the local `corestory` binary scoped to the active workspace.
+Neither plugin declares hooks or telemetry.
+One remote skill, `constraint-tickets`, can generate a GitHub Copilot CLI hook configuration and two shell scripts as files in your working directory for you to review and install by hand.
 
 Reading and analysis are the default in every skill. Some skills can edit the repository, or an explicitly connected system such as Jira, when you ask the agent to do so — see [`SOURCES.md`](SOURCES.md) for the itemized list of behaviors that require an explicit request.
 
-Review [`plugins/corestory/.mcp.json`](plugins/corestory/.mcp.json) and the individual `SKILL.md` files before installing if you want to inspect the exact behavior.
+Review [`plugins/corestory/.mcp.json`](plugins/corestory/.mcp.json), [`plugins/corestory-local/.mcp.json`](plugins/corestory-local/.mcp.json), and the individual `SKILL.md` files before installing if you want to inspect the exact behavior.
 
 ## Validate a checkout
 

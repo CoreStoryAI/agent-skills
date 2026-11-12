@@ -11,12 +11,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ROOT / "plugins" / "corestory" / "skills"
 DEFAULT_OUTPUT = ROOT / ".well-known" / "agent-skills" / "index.json"
-DEFAULT_BASE_URL = "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory/skills"
+PLUGINS = {
+    "corestory": ROOT / "plugins" / "corestory" / "skills",
+    "corestory-local": ROOT / "plugins" / "corestory-local" / "skills",
+}
+DEFAULT_BASE_URL = "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins"
 
 
 def parse_frontmatter(path: Path) -> tuple[str, str]:
+    """Return the name and description declared by a skill."""
     text = path.read_text(encoding="utf-8")
     match = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
     if not match:
@@ -31,19 +35,22 @@ def parse_frontmatter(path: Path) -> tuple[str, str]:
 
 
 def catalog(base_url: str, filename: str) -> dict[str, object]:
+    """Return the discovery catalog for every bundled plugin skill."""
     entries = []
-    for skill_file in sorted(SKILLS.glob("*/SKILL.md")):
-        name, description = parse_frontmatter(skill_file)
-        digest = hashlib.sha256(skill_file.read_bytes()).hexdigest()
-        entries.append(
-            {
-                "name": name,
-                "type": "skill-md",
-                "description": description,
-                "url": f"{base_url.rstrip('/')}/{name}/{filename}",
-                "digest": f"sha256:{digest}",
-            }
-        )
+    for plugin, skills in PLUGINS.items():
+        for skill_file in sorted(skills.glob("*/SKILL.md")):
+            name, description = parse_frontmatter(skill_file)
+            digest = hashlib.sha256(skill_file.read_bytes()).hexdigest()
+            entries.append(
+                {
+                    "name": name,
+                    "plugin": plugin,
+                    "type": "skill-md",
+                    "description": description,
+                    "url": f"{base_url.rstrip('/')}/{plugin}/skills/{name}/{filename}",
+                    "digest": f"sha256:{digest}",
+                }
+            )
     return {
         "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
         "skills": entries,
@@ -51,10 +58,12 @@ def catalog(base_url: str, filename: str) -> dict[str, object]:
 
 
 def render(payload: dict[str, object]) -> str:
+    """Render a catalog deterministically."""
     return json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
 
 
 def main() -> None:
+    """Write or check the discovery catalog."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     parser.add_argument("--filename", default="SKILL.md")

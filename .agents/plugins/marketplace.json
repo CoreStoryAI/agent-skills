@@ -15,6 +15,18 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Productivity"
+    },
+    {
+      "name": "corestory-local",
+      "source": {
+        "source": "local",
+        "path": "./plugins/corestory-local"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "NOT_REQUIRED"
+      },
+      "category": "Productivity"
     }
   ]
 }
