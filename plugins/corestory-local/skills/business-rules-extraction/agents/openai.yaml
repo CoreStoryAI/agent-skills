@@ -10,5 +10,5 @@ dependencies:
       value: corestory-local
       description: >-
         Local CoreStory code intelligence.
-        Start it from the workspace with: corestory mcp --path <workspace> --no-watch
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
       transport: stdio

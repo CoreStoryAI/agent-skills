@@ -19,14 +19,15 @@ Authentication is browser-based OAuth against CoreStory's identity provider. The
 
 `corestory-local` starts the local CoreStory MCP server for the active workspace.
 It makes no network calls, needs no account, and sends no telemetry.
-The workspace must already have an ingested local corpus.
+The repository must already be indexed (`corestory init` and `corestory ingest`), or the agent can index it with the server's own `init` and `ingest` tools.
 
 ```bash
 claude plugin marketplace add corestoryai/agent-skills
 claude plugin install corestory-local@corestory
 ```
 
-The plugin starts `corestory mcp --path <workspace> --no-watch`.
+The plugin starts `corestory mcp` in the folder Claude Code is working in, which serves that repository (a subfolder also works).
+Install the `corestory` command-line tool from [get.corestory.ai](https://get.corestory.ai/) and run `corestory setup` once first.
 It includes `using-corestory`, `bug-resolver`, `implement-feature`, `business-rules-extraction`, `generate-tests`, and `corestory-ask`.
 
 For Gemini CLI, install this repository as an extension:

@@ -5,7 +5,10 @@
   "mcpServers": {
     "corestory-local": {
       "command": "corestory",
-      "args": ["mcp", "--path", "${workspacePath}", "--no-watch"]
+      "args": [
+        "mcp"
+      ],
+      "cwd": "${workspacePath}"
     }
   }
 }
