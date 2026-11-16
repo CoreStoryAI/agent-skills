@@ -122,8 +122,8 @@ def main() -> None:
                 if CODEX_PLACEHOLDER not in text or "codex mcp add corestory --url" not in text:
                     errors.append(f"{path}: missing required CoreStory MCP guidance")
         else:
-            if server.get("command") != "corestory" or server.get("args") != ["mcp", "--path", "${workspaceFolder}", "--no-watch"]:
-                errors.append("corestory-local: MCP server must start the local binary with workspace scope and no watch")
+            if server.get("command") != "corestory" or server.get("args") != ["mcp"]:
+                errors.append("corestory-local: MCP server must start the local binary as `corestory mcp` (it serves its working directory)")
 
     for marketplace, label in ((codex_market, "Codex"), (claude_market, "Claude")):
         plugins = marketplace.get("plugins")
@@ -137,7 +137,8 @@ def main() -> None:
             or gemini.get("version") != EXPECTED_VERSION
             or not isinstance(gemini_local, dict)
             or gemini_local.get("command") != "corestory"
-            or gemini_local.get("args") != ["mcp", "--path", "${workspacePath}", "--no-watch"]):
+            or gemini_local.get("args") != ["mcp"]
+            or gemini_local.get("cwd") != "${workspacePath}"):
         errors.append("Gemini extension must expose the workspace-scoped corestory-local MCP server")
 
     entries = catalog.get("skills", [])
