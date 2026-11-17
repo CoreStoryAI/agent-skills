@@ -20,7 +20,7 @@ Restate the scope in one line at the top of `RULES.md`. If it is broad and you c
 
 - Concept sweep: `search(query, kind:"sao:Rule")` for each concept in scope (calculation, validation, authorization, state change, defaults, limits). Default limit. Hits are leads: `search` never returns empty.
 - File sweep: for each program or file the hits point to, call `rules_for(path)` and follow `next_call` to the end. This finds rules the concept sweep missed. It also returns rules that only support those lines, so check each.
-- For each rule that matters: `entity(entity_id, include:["description","evidence"])`. This gives the statement, typed values, the verbatim quote and the line span.
+- For every rule that goes into the inventory: `entity(entity_id, include:["description","evidence"])`. A name from `rules_for` is not a rule statement. The entity gives the statement, typed values, the verbatim quote and the line span; start from those and check them in step 4.
 
 ## 4. Verify against source
 
@@ -47,7 +47,8 @@ Header: scope, date, build (`corpus_info` snapshot id). Then one block per rule:
 - Enforcement point: `path:line` and what happens on violation
 - Values: literals, rates, thresholds, with their source lines
 - Status: confirmed | corrected | declared-not-enforced | uncertain
-- Notes: how it differs from the graph's statement (if corrected), CoreStory rule id (if any), source: graph | flow-trace | source-search
+- CoreStory: rule id and name, or `none (found in source)`
+- Notes: how it differs from the graph's statement (if corrected); source: graph | flow-trace | source-search
 ```
 
 Group by category. Add a table of `declared-not-enforced` and `uncertain` rules with the reason.
