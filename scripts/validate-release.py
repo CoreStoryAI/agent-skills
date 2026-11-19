@@ -47,7 +47,7 @@ def validate_json(path: Path) -> dict[str, object]:
 def validate_skills(plugin: str, skills: Path, errors: list[str]) -> set[str]:
     """Validate every skill and agent descriptor in one plugin."""
     skill_files = sorted(skills.glob("*/SKILL.md"))
-    expected_count = 20 if plugin == "corestory" else 11
+    expected_count = 20 if plugin == "corestory" else 22
     if len(skill_files) != expected_count:
         errors.append(f"{plugin}: expected {expected_count} skills, found {len(skill_files)}")
     names: set[str] = set()
