@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Local Feature Gap Analysis"
+  short_description: "What exists, what is missing, what to change"
+  default_prompt: "Use $feature-gap-analysis to analyze the gaps for this feature with CoreStory local tools."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio
