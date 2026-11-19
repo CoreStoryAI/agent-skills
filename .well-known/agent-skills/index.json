@@ -178,6 +178,14 @@
       "digest": "sha256:6b72583d37df98e6b3b335f00ea59ee8326ededbdb7a08929fb89b76d93a0474"
     },
     {
+      "name": "constraint-tickets",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Turn a feature request or change into one-constraint tickets built from the code's existing business rules, and generate the completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to break this into tickets, one constraint per ticket, a stop hook, a completion hook, an agentStop hook, a gate, or to not let the agent finish until a constraint holds, or to make an agent respect rules a request never states.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/constraint-tickets/SKILL.md",
+      "digest": "sha256:aa71aef15f6c81577e0b320b4ec7cb96eb04dbfb6740cc80c8d771912beeb3cd"
+    },
+    {
       "name": "corestory-ask",
       "plugin": "corestory-local",
       "type": "skill-md",
@@ -186,12 +194,20 @@
       "digest": "sha256:f5ef42b672e9e6a2aac02d53d403212a419867c2ec621cb8a583d3e739f34051"
     },
     {
+      "name": "generate-e2e-tests",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Write end-to-end tests for a critical user journey, API flow or cross-service path, grounded in CoreStory v3 rule and code-path evidence, and record the journey inventory in E2E-NOTES.md. Use when asked for end-to-end, journey, browser, API-to-database or workflow tests in a codebase CoreStory has ingested. For rule-level unit or integration tests use generate-tests.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/generate-e2e-tests/SKILL.md",
+      "digest": "sha256:4ffa26b4d33d6e73b363b2c842e62ee0b175f23e17c08ca1da77b5e794a877a7"
+    },
+    {
       "name": "generate-tests",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Generate behavioral unit or integration tests using local CoreStory evidence. Use for validation, authorization, state-transition, invariant, or calculation coverage, not full end-to-end journeys.",
+      "description": "Write behavioral unit or integration tests for a module, endpoint or business rule, grounded in CoreStory v3 rule evidence, and record the rule-to-test coverage map in TEST-NOTES.md. Use when asked to add tests, find coverage gaps, write tests for validation, calculation, state-transition or authorization behavior, or test a rule, in a codebase CoreStory has ingested. Not for browser or full user-journey tests.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/generate-tests/SKILL.md",
-      "digest": "sha256:a4f415ba8586490fcbfdf90b2729af2ed77c419b118659fd5b3caefdfc5a80ea"
+      "digest": "sha256:dde610b2fb3f2b6007480232974cb3072d9a5dd4761600c73043020b75e9b21a"
     },
     {
       "name": "implement-feature",
@@ -202,12 +218,36 @@
       "digest": "sha256:dfd2923a057497462dff18da2c5fa3cb5bf899ceb1ea0308dd71644de06d7007"
     },
     {
+      "name": "spec-driven-development",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Write a feature specification or design for a change to an existing codebase before coding, grounded in CoreStory v3 rule evidence, then plan and implement from it. Use when asked to write a spec, design a change, plan from a spec, or work spec-first, including projects that use GitHub Spec Kit or a .specify folder.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/spec-driven-development/SKILL.md",
+      "digest": "sha256:da433c9859965947c26dbf8eb82b2f2272b0831c4766e2c65233f7186711ffea"
+    },
+    {
+      "name": "spec-driven-test-generation",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Decide whether a testing request needs rule-level behavioral tests or end-to-end journey tests, then run the right CoreStory v3 skill. Use when asked to write tests from the business rules, acceptance criteria or specification, test what the system should do rather than how it is built, or when unsure whether to write unit, integration or end-to-end tests.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/spec-driven-test-generation/SKILL.md",
+      "digest": "sha256:5349d083dbf8dd60844f4bbb62f34b826c6880adf2134f4aab1a6633cf498110"
+    },
+    {
       "name": "using-corestory",
       "plugin": "corestory-local",
       "type": "skill-md",
       "description": "Use a local CoreStory knowledge graph to answer codebase questions with source-backed evidence. Use when CoreStory local tools are available and a task involves understanding, tracing, planning, or citing code.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/using-corestory/SKILL.md",
       "digest": "sha256:e82a02406b74b9c4431f476c56957b18a1310d9abec625745334294720da3c44"
+    },
+    {
+      "name": "using-corestory-with-jira",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Work a Jira ticket against the code: read the ticket, find the affected code and rules with CoreStory v3, then resolve it, enrich it with a comment, or draft a new ticket, recorded in JIRA-NOTES.md. Use when given a Jira key or link, asked to triage, estimate, enrich or write up a Jira issue, or to fix a Jira bug or build a Jira story.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/using-corestory-with-jira/SKILL.md",
+      "digest": "sha256:88601e0986bcc6a89088ce96c6c0334adc6fd079b70f7494e0266f25188f03d0"
     }
   ]
 }

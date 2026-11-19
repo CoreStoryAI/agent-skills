@@ -28,7 +28,13 @@ claude plugin install corestory-local@corestory
 
 The plugin starts `corestory mcp` in the folder Claude Code is working in, which serves that repository (a subfolder also works).
 Install the `corestory` command-line tool from [get.corestory.ai](https://get.corestory.ai/) and run `corestory setup` once first.
-It includes `using-corestory`, `bug-resolver`, `implement-feature`, `business-rules-extraction`, `generate-tests`, and `corestory-ask`.
+It includes `using-corestory`, `bug-resolver`, `implement-feature`, `business-rules-extraction`, `generate-tests`, `corestory-ask`, `generate-e2e-tests`, `spec-driven-development`, `spec-driven-test-generation`, `using-corestory-with-jira` and `constraint-tickets`.
+
+The plugin also ships a `SessionStart` hook (`plugins/corestory-local/hooks/hooks.json`) that adds one line to the agent's context pointing it to the CoreStory skills for code changes and codebase questions. In a delivery test, pushing the pointer loaded skills in 4 of 4 runs against about 2 of 4 when left to the agent. Where the plugin hook is not available (other agents, or skills copied in by hand), put the same line in `CLAUDE.md` or `AGENTS.md`:
+
+```
+For any change to this code or any question about it, first use the matching CoreStory skill (implement-feature, bug-resolver, generate-tests, corestory-ask) before editing or answering.
+```
 
 For Gemini CLI, install this repository as an extension:
 
