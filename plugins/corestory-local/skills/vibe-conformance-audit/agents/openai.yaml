@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Vibe Conformance Audit"
+  short_description: "Audit delivered code against legacy"
+  default_prompt: "Use $vibe-conformance-audit to do this CoreStory modernization step."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio
