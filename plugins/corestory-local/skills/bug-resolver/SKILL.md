@@ -21,13 +21,23 @@ Write the symptom, expected behavior, where it shows, and how to reproduce it at
 - Rules about the behavior: `search(query, kind:"sao:Rule")`, then `entity(entity_id, include:["description","evidence"])`, then `read_file(path, start_line, end_line)`. Hits are leads; `search` never returns empty.
 - Code path: `search(query)` for the symbols and files, `connections` on an entity for callers and callees, `list_files(prefix)` for nearby tests, `read_file` for the lines.
 - Hypothesis: write the leading cause and one or two alternatives, each with the `path:start-end` you read.
-- Sibling sites: search for the same value or rule in other programs, layers and languages (COBOL, SQL, config, UI). A rule copied elsewhere has to be fixed there too, or named as left alone. List each site checked.
 
-## 4. Test first
+## 4. Cross-layer concept sweep (required before any edit)
+
+The same value or rule is often enforced in more than one layer, and the file with the symptom may not be the one that decides it.
+
+1. List the business nouns and quantities the symptom touches (amounts, counts, thresholds, dates, statuses) in the notes file.
+2. For each, run `search(query, kind:"sao:Rule")` with at least two plain-language phrasings of the concept, default limit. Do not paste the ticket text.
+3. Open with `entity(entity_id, include:["description","evidence"])` every hit whose file is not one you plan to edit and whose statement constrains the same noun or quantity, then `read_file` the evidence lines.
+4. Record each as `constraint from another layer: path:start-end, value`, across services, entities, config, COBOL, SQL and UI validators.
+5. Compare each value with what the code you are changing implies. On a conflict, fix consistently with the stricter or enforced value, or stop and name the conflict with both values and locations, in the file and in your final message. Do not choose silently.
+6. A rule copied elsewhere has to be fixed there too, or named as left alone. List each site checked.
+
+## 5. Test first
 
 Write a regression test that fails on the current code, following the conventions of the nearest existing tests. Run it and record the failure. Add a case for the common path the fix must not break. If tests cannot run here, say so in the file; do not claim they pass.
 
-## 5. Before every edit
+## 6. Before every edit
 
 For each file you are about to change:
 
@@ -35,14 +45,14 @@ For each file you are about to change:
 2. `entity(entity_id, include:["description","evidence"])` for each rule that touches the change.
 3. `read_file(path, start_line, end_line)` to confirm the rule's quote on those lines.
 
-A rule the fix would break stays in force: keep it, or stop and record the conflict in the file and in your final message. Do not choose silently. `rules_for` also returns rules that only support those lines, so check each. An empty page does not mean no rule applies.
+A rule the fix would break stays in force: keep it (the stricter or enforced value), or stop and record the conflict in the file and in your final message. Do not choose silently. `rules_for` also returns rules that only support those lines, so check each. An empty page does not mean no rule applies.
 
-## 6. Fix and verify
+## 7. Fix and verify
 
 Make the smallest change that restores the behavior. Run the regression test and the relevant wider suite. Record the commands you ran and what they printed. CoreStory reads and indexes code; it does not run it, so test results are yours to report.
 
-## 7. Close out
+## 8. Close out
 
-Finish `BUG-NOTES.md`: root cause with `path:start-end`, changed files, the rules you checked before each edit (id and `path:start-end`), sibling sites changed or left, commands run with results. End with `## Not verified`: rules not read back against source, sites not searched, tests not run, and that CoreStory describes the ingested snapshot, not necessarily the working tree.
+Finish `BUG-NOTES.md`: root cause with `path:start-end`, changed files, the rules you checked before each edit and constraints from other layers (id and `path:start-end`, value), sibling sites changed or left, commands run with results. End with `## Not verified`: rules not read back against source, sites not searched, tests not run, and that CoreStory describes the ingested snapshot, not necessarily the working tree.
 
 Do not call the fix complete or guaranteed.

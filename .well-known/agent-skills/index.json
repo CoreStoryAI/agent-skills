@@ -167,7 +167,7 @@
       "type": "skill-md",
       "description": "Find the root cause of a defect with CoreStory v3 rule evidence, fix it test-first, and write the investigation to BUG-NOTES.md. Use when asked to fix a bug, regression, wrong result, failing behavior, or a bug ticket in a codebase CoreStory has ingested.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/bug-resolver/SKILL.md",
-      "digest": "sha256:39dad8b9ca9e2adabd247cb4494502555141ab4b1d1da764dff7cd23d903f320"
+      "digest": "sha256:5e24b68e0992fd1e6012893e69f0e6bb7bc7d59326da71ad159ca272c61b0ade"
     },
     {
       "name": "business-rules-extraction",
@@ -199,7 +199,7 @@
       "type": "skill-md",
       "description": "Implement a feature, endpoint, field, or change to existing behavior with CoreStory v3 rule evidence and test-first development, and write the design and assumptions to FEATURE-NOTES.md. Use when asked to add, build or change something in a codebase CoreStory has ingested, or to work a feature ticket or change request.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/implement-feature/SKILL.md",
-      "digest": "sha256:dd6147818c53bd572a1288bc4a2c2fa797e19886e7f3fece9d116f9c36c57426"
+      "digest": "sha256:dfd2923a057497462dff18da2c5fa3cb5bf899ceb1ea0308dd71644de06d7007"
     },
     {
       "name": "using-corestory",
