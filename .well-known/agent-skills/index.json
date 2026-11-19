@@ -173,9 +173,9 @@
       "name": "business-rules-extraction",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Extract and source-verify business rules from a local CoreStory graph and repository source. Use for validation, authorization, state-transition, invariant, or implicit-rule discovery.",
+      "description": "Extract, document, and source-verify the business rules in a codebase that CoreStory has ingested, and write them to a rules inventory file. Use when asked to extract, document, list, or inventory business rules, calculations, validations, authorization, or state transitions for a module or domain.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/business-rules-extraction/SKILL.md",
-      "digest": "sha256:4f6584cf91409695d3be824e1761d70bdb855034d99a6aed4957a40da8639a87"
+      "digest": "sha256:6b72583d37df98e6b3b335f00ea59ee8326ededbdb7a08929fb89b76d93a0474"
     },
     {
       "name": "corestory-ask",
