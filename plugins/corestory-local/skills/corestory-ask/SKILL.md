@@ -1,28 +1,19 @@
 ---
 name: corestory-ask
 license: MIT
-description: "Compare a local CoreStory answer with repository evidence to identify intelligence gaps. Use to audit an answer, investigate a suspected gap, or generate evidence-backed gap candidates."
+description: "Check a CoreStory v3 answer against the source and write down where they differ. Use to audit what CoreStory says about a codebase, test whether it missed or misstated something, or collect evidence-backed gap candidates."
 ---
 
 # Compare CoreStory with source
 
-Use this skill for a deliberate differential, not routine development work.
+A deliberate differential, not routine development. Output: `ASK-DELTA.md` in the repository root (or the file the user names).
 
-Confirm the local graph with `corpus_info`.
-Ask the selected CoreStory tools a focused question about the codebase.
-Capture the returned claims, evidence locations, and snapshot limits.
-
-Independently investigate the same question in the repository.
-Search and read the relevant source without treating the graph answer as authoritative.
-Cite path and location for every code-grounded claim.
-
-Present the CoreStory finding, the source-grounded finding, and a concise delta table.
-Classify each delta as one of the following:
-
-- CoreStory gap: source evidence contradicts or materially exceeds the graph finding.
-- CoreStory adds value: the graph found useful context that the source-only pass missed.
-- Staleness: a source change is newer than the captured snapshot.
-- Uncertain: the conflict cannot be resolved from available evidence.
-
-Treat deltas as leads, not verdicts.
-Offer a narrowly scoped gap report only for well-evidenced CoreStory gaps.
+1. Preflight: `status`, then `corpus_info`. If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
+2. Take the question (ask the user for one focused question if none). Record the CoreStory side: `search(query, kind:"sao:Rule")` and `kind:"plot:Chunk"` at default limits; `rules_for(path, start_line, end_line)` for files; `entity(entity_id, include:["description","evidence"])`; `connections` where relations matter. Write the claims, their ids and cited `path:start-end`. If `search` says "could not answer", use the other tools and say so.
+3. Investigate independently: Grep and `read_file(path, start_line, end_line)` on the source. Do not treat a graph claim as true; cite only lines you read.
+4. Write a delta table: claim, CoreStory evidence, source evidence, classification:
+   - CoreStory gap: source contradicts or materially exceeds the graph.
+   - CoreStory adds value: the graph found something the source pass missed.
+   - Staleness: the working tree changed after the snapshot.
+   - Uncertain: the evidence cannot settle it.
+5. End with `## Not verified`: claims not re-read, paged results not followed. Deltas are leads, not verdicts. `search` never returns empty, so a missing rule in the results does not prove it is absent. Offer a narrow gap report only for well-evidenced gaps.
