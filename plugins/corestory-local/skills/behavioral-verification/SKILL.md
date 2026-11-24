@@ -6,11 +6,13 @@ description: "Compare a modernized component against the approved business rules
 
 # Behavioral verification (static comparison)
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Output: `modernization/06-verification-COMPONENT.md`. This is a source-to-source comparison. CoreStory does not run or test code, and neither does this skill: it recommends the tests that would settle what reading cannot.
 
 ## 1. Preflight and inputs
 
-Call `status`, then `corpus_info`. Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK. The ingested snapshot is the legacy system; the modernized code is read from the working tree unless it was ingested too.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK. The ingested snapshot is the legacy system; the modernized code is read from the working tree unless it was ingested too.
 
 Read `modernization/02-rules-inventory.md` (must be `approved`) and, if present, `04-work-packages.md` or `05-extraction-*.md` for the component's scope. Ask for the component name and where the modernized code lives if not given. If the inventory is missing or `draft`, stop and name it. Do not verify code written in this session; ask for a fresh session.
 

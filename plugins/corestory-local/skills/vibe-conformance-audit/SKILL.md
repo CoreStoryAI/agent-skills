@@ -6,6 +6,8 @@ description: "Run an independent, read-only audit of delivered code against lega
 
 # Vibe conformance audit
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Output: `modernization/07-conformance-<component>.md`. Read-only: never edit code under audit.
 
 ## Refuse to run
@@ -14,7 +16,7 @@ If this session wrote or edited the code under audit, stop and ask for a fresh s
 
 ## 1. Preflight and inputs
 
-Call `status`, then `corpus_info`. Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK. The snapshot is the legacy system; read the delivered code from the working tree.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK. The snapshot is the legacy system; read the delivered code from the working tree.
 
 Read `modernization/02-rules-inventory.md` (the spec; must be `approved`). Ask for the component and where its code lives. Do not open `06-verification-*.md` yet. Start the file with the header (`phase: conformance-<component>`, `status: draft`, `date`, `snapshot` from `corpus_info`, `approver: pending`).
 

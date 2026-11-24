@@ -6,11 +6,13 @@ description: "Break an approved target architecture into dependency-ordered work
 
 # Decomposition and sequencing
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Output: `modernization/04-work-packages.md`, started early, appended as you go. Phase 4 of `code-modernization`. The engineering lead approves the sequence before work packages are authored.
 
 ## 1. Preflight and inputs
 
-Call `status`, then `corpus_info`. Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
 
 Read `modernization/03-target-architecture.md` (must be `approved`, with its ADR filled in) and `modernization/02-rules-inventory.md`. If either is missing or `draft`, stop and name it. Read `01-assessment.md` if present. Exception: under `vibe-modernization` with an existing target there is no `03` file; use the target idioms in an approved `01-assessment.md` instead.
 

@@ -6,9 +6,11 @@ description: "Route agent-led, human-gated modernization from a legacy system in
 
 # Vibe modernization: router with constraints
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Router and sequencer; it does not execute steps. It also constrains them. Rules: one step per session; stop at each gate; never skip a step; never approve a step yourself; never verify a build this session made (ask for a fresh session). A missing or unindexed target is not a reason to refuse.
 
-Preflight: call `status`, then `corpus_info`. If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK. The ingested snapshot is the legacy system.
+Preflight: call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK. The ingested snapshot is the legacy system.
 
 ## Disciplines for every step
 

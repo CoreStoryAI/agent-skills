@@ -6,11 +6,13 @@ description: "Design the extraction of one service from a monolith using the str
 
 # Monolith to microservices: one extraction
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Output: `modernization/05-extraction-<wp>.md` where `<wp>` is the work package id (for example `WP-01`). Design only. Building the service is `implement-feature`, in its own session, one work package at a time.
 
 ## 1. Preflight and inputs
 
-Call `status`, then `corpus_info`. Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
 
 Read `modernization/04-work-packages.md`, `03-target-architecture.md` and `02-rules-inventory.md`. All must be `approved`; if not, stop and name the file. Ask which work package to extract if the user did not say; take the package's BR ids from the file. Start the output file with the header:
 

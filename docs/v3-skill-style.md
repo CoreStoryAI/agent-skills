@@ -10,6 +10,10 @@ Measured on earlier builds: extra correct text has made agent results worse, Cla
 
 Ten, over stdio: `status`, `init`, `ingest` (lifecycle); `corpus_info`, `search`, `entity`, `connections`, `read_file`, `list_files`, `rules_for` (exploration). Skills name the tools they use. They never name a tool that is not in this list.
 
+## Hosted CoreStory
+
+Hosted CoreStory (Kenobi MCP) lists the read tools with a `v3_` prefix (`v3_search`, `v3_entity`, `v3_connections`, `v3_list_files`, `v3_read_file`, `v3_rules_for`, `v3_corpus_info`), each with a required `project_id` (from Kenobi's `list_projects`). `status`, `init` and `ingest` are not available there; Kenobi handles ingestion. Results are Plot's, unchanged, so a `next_call` may name the unprefixed tool and omit `project_id`: map it to the `v3_` name and add the same `project_id`. Every skill carries the same one-line note near the top saying this; keep skill bodies written with the desktop names.
+
 ## Rules of the house
 
 1. **Preflight first.** Call `status`, then `corpus_info`.

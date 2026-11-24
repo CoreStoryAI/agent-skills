@@ -6,9 +6,11 @@ description: "Answer questions about a codebase with CoreStory v3, citing source
 
 # Using CoreStory v3 tools
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 The server instructions list the tools. This is the short recipe for answering a question with evidence.
 
-1. Preflight: `status`, then `corpus_info`. Proceed on `state: snapshot_selected`, a latest ingest that has not `failed`, and a nonzero `sao:Rule` count. Otherwise relay `status.next_step` and ask whether to continue from source alone. Never call `init` or `ingest` without the user's explicit OK; `ingest` spends their model-provider money. If `search` says it "could not answer", use `rules_for`, `entity`, `connections` and `read_file`.
+1. Preflight: `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed on `state: snapshot_selected`, a latest ingest that has not `failed`, and a nonzero `sao:Rule` count. Otherwise relay `status.next_step` and ask whether to continue from source alone. Never call `init` or `ingest` without the user's explicit OK; `ingest` spends their model-provider money. If `search` says it "could not answer", use `rules_for`, `entity`, `connections` and `read_file`.
 2. Rules about a concept: `search(query, kind:"sao:Rule")`; the excerpt is the rule statement. For code, `kind:"plot:Chunk"`.
 3. Rules for a file or lines: `rules_for(path, start_line, end_line)`; follow `next_call` to the end. It also returns rules that only support those lines.
 4. Detail: `entity(entity_id, include:["description","evidence"])` gives the statement, values and the quote. A plain `entity` call returns almost nothing for a rule.

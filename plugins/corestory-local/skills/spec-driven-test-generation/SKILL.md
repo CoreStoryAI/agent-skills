@@ -6,6 +6,8 @@ description: "Decide whether a testing request needs rule-level behavioral tests
 
 # Choose the test-generation workflow
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Principle: establish what the system must do (verified rules, the user's acceptance criteria) before reading how the code does it, and assert outcomes, not wiring.
 
 ## Route
@@ -22,7 +24,7 @@ Redirect other requests:
 
 ## Shared method
 
-1. Preflight is each skill's step 1: `status`, then `corpus_info`. Stop and relay `status.next_step` if the snapshot is not ready. Never call `init` or `ingest` without the user's OK.
+1. Preflight is each skill's step 1: `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Stop and relay `status.next_step` if the snapshot is not ready. Never call `init` or `ingest` without the user's OK.
 2. Confirm the repo already has a test framework; these skills match existing conventions and do not set up infrastructure unasked.
 3. Fix the scope to one module or one journey. Specific nouns find specific rules: use `search(query, kind:"sao:Rule")` with the concrete entities and quantities, not "what should I test".
 4. Hand off to the chosen skill and follow it. Its notes file (`TEST-NOTES.md` or `E2E-NOTES.md`) is the deliverable.

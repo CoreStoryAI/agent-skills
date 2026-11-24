@@ -6,11 +6,13 @@ description: "Lay out modernization strategy options (the seven Rs) and a target
 
 # Target architecture and strategy
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Output: `modernization/03-target-architecture.md`, started at the top of the work and appended as you go. Phase 3 of `code-modernization`. The architect or tech lead decides; you do not.
 
 ## 1. Preflight and inputs
 
-Call `status`, then `corpus_info`. Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero; otherwise relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
 
 Read `modernization/01-assessment.md` and `modernization/02-rules-inventory.md`. Each must have `status: approved` in its header. If one is missing or still `draft`, stop and name it. Summarize their blockers, coupling hotspots, shared data and rules at the top of your file.
 

@@ -6,9 +6,11 @@ description: "Route a legacy modernization through its phases one at a time, usi
 
 # Code modernization: router
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 This skill routes and enforces gates. It does not execute a phase; the phase skill does. Rules: one phase per session; stop at each gate; never skip a phase; never approve a phase yourself.
 
-Preflight: call `status`, then `corpus_info`. If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
+Preflight: call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
 
 ## Phase state lives in `modernization/` in the repository
 

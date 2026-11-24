@@ -6,6 +6,8 @@ description: "Install CoreStory v3, set it up, and learn what its tools do and w
 
 # CoreStory v3 reference
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 ## Install and set up
 
 - Install the CLI from get.corestory.ai and follow that page. Check with `corestory --version`.

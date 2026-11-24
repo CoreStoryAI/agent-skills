@@ -6,9 +6,11 @@ description: "Check a CoreStory v3 answer against the source and write down wher
 
 # Compare CoreStory with source
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 A deliberate differential, not routine development. Output: `ASK-DELTA.md` in the repository root (or the file the user names).
 
-1. Preflight: `status`, then `corpus_info`. If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
+1. Preflight: `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). If the state is not `snapshot_selected`, the latest ingest `failed`, or the `sao:Rule` count is zero, stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK.
 2. Take the question (ask the user for one focused question if none). Record the CoreStory side: `search(query, kind:"sao:Rule")` and `kind:"plot:Chunk"` at default limits; `rules_for(path, start_line, end_line)` for files; `entity(entity_id, include:["description","evidence"])`; `connections` where relations matter. Write the claims, their ids and cited `path:start-end`. If `search` says "could not answer", use the other tools and say so.
 3. Investigate independently: Grep and `read_file(path, start_line, end_line)` on the source. Do not treat a graph claim as true; cite only lines you read.
 4. Write a delta table: claim, CoreStory evidence, source evidence, classification:

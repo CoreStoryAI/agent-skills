@@ -6,11 +6,13 @@ description: "Extract, document, and source-verify the business rules in a codeb
 
 # Extract business rules into an inventory file
 
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
+
 Output: `RULES.md` in the repository root (or the file the user names). Create it at the start and append as you go.
 
 ## 1. Preflight
 
-Call `status`, then `corpus_info`. Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero. Otherwise stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK; `ingest` spends their model-provider money. If `search` says it "could not answer", the embedding key is missing: use `rules_for`, `entity`, `connections` and `read_file` instead.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero. Otherwise stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK; `ingest` spends their model-provider money. If `search` says it "could not answer", the embedding key is missing: use `rules_for`, `entity`, `connections` and `read_file` instead.
 
 ## 2. Scope
 
