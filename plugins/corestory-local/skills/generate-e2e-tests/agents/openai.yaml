@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Local E2E Tests"
+  short_description: "Generate journey tests from traced code paths"
+  default_prompt: "Use $generate-e2e-tests to trace a user journey and add end-to-end tests with CoreStory local tools."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio

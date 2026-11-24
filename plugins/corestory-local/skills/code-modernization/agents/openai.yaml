@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Code Modernization"
+  short_description: "Route phased modernization with gates"
+  default_prompt: "Use $code-modernization to find the current modernization phase and route to the next skill."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio

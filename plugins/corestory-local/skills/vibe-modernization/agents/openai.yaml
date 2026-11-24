@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Vibe Modernization"
+  short_description: "Agent-led modernization with gates"
+  default_prompt: "Use $vibe-modernization to do this CoreStory modernization step."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio

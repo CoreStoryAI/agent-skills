@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Local Constraint Tickets"
+  short_description: "One-constraint tickets and a completion hook"
+  default_prompt: "Use $constraint-tickets to build a constraint list from rules, write constraint tickets, and generate the completion hook."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio

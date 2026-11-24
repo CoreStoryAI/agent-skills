@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Local Spec-Driven Development"
+  short_description: "Write a delta spec grounded in rule evidence"
+  default_prompt: "Use $spec-driven-development to write and implement a spec grounded in CoreStory local evidence."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio

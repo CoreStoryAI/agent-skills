@@ -1,6 +1,6 @@
 interface:
   display_name: "CoreStory Local Test Generation"
-  short_description: "Generate tests from local evidence"
+  short_description: "Generate behavioral tests from rule evidence"
   default_prompt: "Use $generate-tests to find behavioral gaps and add tests with CoreStory local tools."
 policy:
   allow_implicit_invocation: true

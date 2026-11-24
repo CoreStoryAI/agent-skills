@@ -162,52 +162,180 @@
       "digest": "sha256:07c65c121c6a03713335debd62066a98992d1249309f6b1961770ae15c13fcf2"
     },
     {
+      "name": "behavioral-verification",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Compare a modernized component against the approved business rules inventory by reading legacy source and new code, classify each rule, and recommend tests; writes modernization/06-verification-COMPONENT.md. Use for behavioral equivalence, rule-by-rule comparison, or an equivalence report. It compares code; it does not run it.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/behavioral-verification/SKILL.md",
+      "digest": "sha256:d5476f520662eae0074255b293a24bfeba206b7ea746ae2fb73eba362cb8856c"
+    },
+    {
       "name": "bug-resolver",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Investigate and fix defects with local CoreStory evidence and test-driven development. Use for bug reports, regressions, failures, root-cause investigations, or bug-ticket IDs.",
+      "description": "Find the root cause of a defect with CoreStory v3 rule evidence, fix it test-first, and write the investigation to BUG-NOTES.md. Use when asked to fix a bug, regression, wrong result, failing behavior, or a bug ticket in a codebase CoreStory has ingested.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/bug-resolver/SKILL.md",
-      "digest": "sha256:1d8f059eea11479418a36ba729ba68f27aa5c7bf3f8d6aa4142a2bcccbaf8886"
+      "digest": "sha256:6de8f72732de61dd13174f11440a0312d3a69dd451c2d51b2d0eafdf017a4ef0"
     },
     {
       "name": "business-rules-extraction",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Extract and source-verify business rules from a local CoreStory graph and repository source. Use for validation, authorization, state-transition, invariant, or implicit-rule discovery.",
+      "description": "Extract, document, and source-verify the business rules in a codebase that CoreStory has ingested, and write them to a rules inventory file. Use when asked to extract, document, list, or inventory business rules, calculations, validations, authorization, or state transitions for a module or domain.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/business-rules-extraction/SKILL.md",
-      "digest": "sha256:4f6584cf91409695d3be824e1761d70bdb855034d99a6aed4957a40da8639a87"
+      "digest": "sha256:de2a2ba2aa716f7b2c2413fb8aad0b6f869aadfbb43a3cbafc6bcb25260f60a2"
+    },
+    {
+      "name": "code-modernization",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Route a legacy modernization through its phases one at a time, using phase files in the repo as state and human approval gates between phases. Use for modernization, migration, legacy refactoring, monolith decomposition, or readiness requests, or to ask which modernization phase is next.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/code-modernization/SKILL.md",
+      "digest": "sha256:fe2411e934088c890a037be37b7c7f37e2ea747d34a7ea4fd6489ae698bd4df1"
+    },
+    {
+      "name": "codebase-assessment",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Assess how ready a codebase is to modernize and what could go wrong, using CoreStory v3 rules, features, capabilities and call edges, and write the findings to ASSESSMENT.md. Use when asked to assess, size up, audit or evaluate a legacy system, its modernization readiness, risks, technical debt, or what is in it.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/codebase-assessment/SKILL.md",
+      "digest": "sha256:7fff99dbb85cb5680e1c0c97da9ec5681b4e6004c4fe29b0bb4eb655d7bbb6e3"
+    },
+    {
+      "name": "constraint-tickets",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Turn a feature request or change into one-constraint tickets built from the code's existing business rules, and generate the completion hook that refuses to let an agent finish until each checkable constraint holds. Use when asked for constraint tickets, to break this into tickets, one constraint per ticket, a stop hook, a completion hook, an agentStop hook, a gate, or to not let the agent finish until a constraint holds, or to make an agent respect rules a request never states.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/constraint-tickets/SKILL.md",
+      "digest": "sha256:fe4560d7c6731fb06dd6abc90cd969733ea273108a0cc95c3fb07fffbcbd9612"
     },
     {
       "name": "corestory-ask",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Compare a local CoreStory answer with repository evidence to identify intelligence gaps. Use to audit an answer, investigate a suspected gap, or generate evidence-backed gap candidates.",
+      "description": "Check a CoreStory v3 answer against the source and write down where they differ. Use to audit what CoreStory says about a codebase, test whether it missed or misstated something, or collect evidence-backed gap candidates.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/corestory-ask/SKILL.md",
-      "digest": "sha256:f5ef42b672e9e6a2aac02d53d403212a419867c2ec621cb8a583d3e739f34051"
+      "digest": "sha256:b6e0c2f5c73a520dfc5d872c779250088da8e6f577d60affef74c46f950e59fd"
+    },
+    {
+      "name": "corestory-reference",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Install CoreStory v3, set it up, and learn what its tools do and where they fall short. Use when asked how to install or start CoreStory, what the corestory tools are, why a CoreStory call failed or looks empty, or how to ingest a repository.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/corestory-reference/SKILL.md",
+      "digest": "sha256:99ef6b8329e58c10d2cb8ce5ff197f45b085e3b0707f1414063a16c38daac3c3"
+    },
+    {
+      "name": "decomposition-sequencing",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Break an approved target architecture into dependency-ordered work packages and write them to modernization/04-work-packages.md. Use for migration sequencing, waves, work packages, or an executable modernization backlog.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/decomposition-sequencing/SKILL.md",
+      "digest": "sha256:9a64d3ae55631bf74e973db56f1820a511648fc7b955b22adbecf9b29c5e4dde"
+    },
+    {
+      "name": "feature-gap-analysis",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Work out what already exists, what is missing, which files change and in what order before building a feature, using CoreStory v3 rules and code evidence, and write the result to GAP-ANALYSIS.md. Use when asked what needs to change to build or add a feature, for a gap analysis, an impact analysis, or an implementation plan before coding.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/feature-gap-analysis/SKILL.md",
+      "digest": "sha256:79aa942fc87f78829c1b6ccfbc80df6cd21c3e37db92356870cea6849db08cc1"
+    },
+    {
+      "name": "generate-e2e-tests",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Write end-to-end tests for a critical user journey, API flow or cross-service path, grounded in CoreStory v3 rule and code-path evidence, and record the journey inventory in E2E-NOTES.md. Use when asked for end-to-end, journey, browser, API-to-database or workflow tests in a codebase CoreStory has ingested. For rule-level unit or integration tests use generate-tests.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/generate-e2e-tests/SKILL.md",
+      "digest": "sha256:eade8878869783d5dd5ebf79891fdda77a41b2b41f7a2d226ecfb392cb7316e6"
     },
     {
       "name": "generate-tests",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Generate behavioral unit or integration tests using local CoreStory evidence. Use for validation, authorization, state-transition, invariant, or calculation coverage, not full end-to-end journeys.",
+      "description": "Write behavioral unit or integration tests for a module, endpoint or business rule, grounded in CoreStory v3 rule evidence, and record the rule-to-test coverage map in TEST-NOTES.md. Use when asked to add tests, find coverage gaps, write tests for validation, calculation, state-transition or authorization behavior, or test a rule, in a codebase CoreStory has ingested. Not for browser or full user-journey tests.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/generate-tests/SKILL.md",
-      "digest": "sha256:a4f415ba8586490fcbfdf90b2729af2ed77c419b118659fd5b3caefdfc5a80ea"
+      "digest": "sha256:dfbe3a3388f0f1caab7628c2062fa2dd6eaad11d61dc2aefea58c6c228b2c22c"
     },
     {
       "name": "implement-feature",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Implement a feature with local CoreStory evidence and test-driven development. Use for feature tickets, enhancements, or requested product changes, not defect investigation.",
+      "description": "Implement a feature, endpoint, field, or change to existing behavior with CoreStory v3 rule evidence and test-first development, and write the design and assumptions to FEATURE-NOTES.md. Use when asked to add, build or change something in a codebase CoreStory has ingested, or to work a feature ticket or change request.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/implement-feature/SKILL.md",
-      "digest": "sha256:585fd75e84ac09ef45cf88a24f3c808ef75699ca589cfa88e54c02903da42fef"
+      "digest": "sha256:66bda18d8e08df8ef3086ef80dd64199d612e5ec335c433880c0c7bc00599d74"
+    },
+    {
+      "name": "ma-technical-due-diligence",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Review an acquisition target's codebase for technical risk with CoreStory v3 evidence and write the findings to DILIGENCE.md. Use when asked for technical due diligence, an acquisition or M&A review, a code quality, security, scalability or integration risk review, or what to worry about in a codebase before buying it.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/ma-technical-due-diligence/SKILL.md",
+      "digest": "sha256:3fdef954f80d433d064a969478a0164e401beb91106b5c11d5b5d36704d857bd"
+    },
+    {
+      "name": "monolith-to-microservices",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Design the extraction of one service from a monolith using the strangler fig pattern: service boundary, database decomposition, and facade plan, written to modernization/05-extraction-WP.md. Use for service-boundary work, microservice extraction, or database decomposition for one approved work package.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/monolith-to-microservices/SKILL.md",
+      "digest": "sha256:202e9f24447f1493284c748f92d076267a686150462a860d025e60a4ded64673"
+    },
+    {
+      "name": "spec-driven-development",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Write a feature specification or design for a change to an existing codebase before coding, grounded in CoreStory v3 rule evidence, then plan and implement from it. Use when asked to write a spec, design a change, plan from a spec, or work spec-first, including projects that use GitHub Spec Kit or a .specify folder.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/spec-driven-development/SKILL.md",
+      "digest": "sha256:39b36d5bf8bd1b2524c4a5e3fd12b8cea0cc75349890f348eb33b25340d5dcb8"
+    },
+    {
+      "name": "spec-driven-test-generation",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Decide whether a testing request needs rule-level behavioral tests or end-to-end journey tests, then run the right CoreStory v3 skill. Use when asked to write tests from the business rules, acceptance criteria or specification, test what the system should do rather than how it is built, or when unsure whether to write unit, integration or end-to-end tests.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/spec-driven-test-generation/SKILL.md",
+      "digest": "sha256:2cfe6de6cd0f4778151f0ca5ad2be295d7e8d9c27c75e0c4b8df8db35793bd10"
+    },
+    {
+      "name": "target-architecture",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Lay out modernization strategy options (the seven Rs) and a target architecture with trade-offs, then record the human's decision as an ADR in modernization/03-target-architecture.md. Use after the assessment and rules inventory are approved, for strategy selection, target-state design, or an architecture decision record.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/target-architecture/SKILL.md",
+      "digest": "sha256:1fd5078b30d22b571361cdce960c1692a12e038bfa06f5525324b718db5c9f6b"
     },
     {
       "name": "using-corestory",
       "plugin": "corestory-local",
       "type": "skill-md",
-      "description": "Use a local CoreStory knowledge graph to answer codebase questions with source-backed evidence. Use when CoreStory local tools are available and a task involves understanding, tracing, planning, or citing code.",
+      "description": "Answer questions about a codebase with CoreStory v3, citing source lines you checked. Use when asked how something works, where a rule or value comes from, what a file enforces, or to trace or explain code in a repository CoreStory has ingested.",
       "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/using-corestory/SKILL.md",
-      "digest": "sha256:e82a02406b74b9c4431f476c56957b18a1310d9abec625745334294720da3c44"
+      "digest": "sha256:ebc5a8794926ed687f70cb25438f30f70b5557eb22f9cdd39e551f9add2ee468"
+    },
+    {
+      "name": "using-corestory-with-jira",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Work a Jira ticket against the code: read the ticket, find the affected code and rules with CoreStory v3, then resolve it, enrich it with a comment, or draft a new ticket, recorded in JIRA-NOTES.md. Use when given a Jira key or link, asked to triage, estimate, enrich or write up a Jira issue, or to fix a Jira bug or build a Jira story.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/using-corestory-with-jira/SKILL.md",
+      "digest": "sha256:d64bf5383e75537139e54750874bb933a69ccd4dafe6d7896fd6e9ce6f749799"
+    },
+    {
+      "name": "vibe-conformance-audit",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Run an independent, read-only audit of delivered code against legacy source at the grain of single behaviors, with verdicts and an orphan sweep, written to modernization/07-conformance-COMPONENT.md. Use to find stubs, missing behavior or divergence, in a session that did not write the code.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/vibe-conformance-audit/SKILL.md",
+      "digest": "sha256:d5ecd1243533f2e89e443121d73783e22a3e930e53c393de47bd6bbbe2df3153"
+    },
+    {
+      "name": "vibe-modernization",
+      "plugin": "corestory-local",
+      "type": "skill-md",
+      "description": "Route agent-led, human-gated modernization from a legacy system into an existing or new target, one step per session, using phase files in the repo as state. Use for legacy-to-target migration with source-anchored parity checks and an independent conformance audit.",
+      "url": "https://raw.githubusercontent.com/corestoryai/agent-skills/main/plugins/corestory-local/skills/vibe-modernization/SKILL.md",
+      "digest": "sha256:2b74cfa3524b6d38508481d52130a27362acf2ca16afbbce4bf8f244022beb76"
     }
   ]
 }

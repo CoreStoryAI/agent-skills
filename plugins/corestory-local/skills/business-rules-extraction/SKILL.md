@@ -1,23 +1,60 @@
 ---
 name: business-rules-extraction
 license: MIT
-description: "Extract and source-verify business rules from a local CoreStory graph and repository source. Use for validation, authorization, state-transition, invariant, or implicit-rule discovery."
+description: "Extract, document, and source-verify the business rules in a codebase that CoreStory has ingested, and write them to a rules inventory file. Use when asked to extract, document, list, or inventory business rules, calculations, validations, authorization, or state transitions for a module or domain."
 ---
 
-# Extract business rules
+# Extract business rules into an inventory file
 
-Confirm graph availability with `corpus_info`.
-Agree on a bounded domain or module when the requested scope is broad.
-Search for the business concept, related entities, state changes, validation, authorization, persistence, and tests.
-Use entity and connection results to trace the relevant flows.
-Read source around every candidate rule.
+> On hosted CoreStory the tools are prefixed `v3_` (e.g. `v3_rules_for`), take a `project_id` (from `list_projects`), and there is no `status`/`init`/`ingest`: start with `v3_corpus_info`. When following a `next_call`, use the `v3_` name and the same `project_id`.
 
-For each rule, record the claim, source location, enforcement point, violation behavior, scope, and confidence.
-Do not call a declaration an enforced rule until source shows the check that rejects invalid input or prevents an unauthorized action.
-Classify rules as confirmed, corrected, declared-but-not-enforced, or uncertain.
+Output: `RULES.md` in the repository root (or the file the user names). Create it at the start and append as you go.
 
-Trace critical flows from entry point to side effects to find behavior that a domain search misses.
-Look for ignored input, overwrites, swallowed errors, UI-only checks, and dead fields.
+## 1. Preflight
 
-Deliver a compact rules inventory grouped by domain, with evidence locations and a separate list of declarations that are not enforced.
-State what could not be verified from the captured source.
+Call `status` if available, then `corpus_info` (hosted: `v3_corpus_info` for the chosen project). Proceed only if `status.state` is `snapshot_selected`, the latest ingest has not `failed`, and the `sao:Rule` count is above zero. Otherwise stop and relay `status.next_step`. Never call `init` or `ingest` without the user's explicit OK; `ingest` spends their model-provider money. If `search` says it "could not answer", the embedding key is missing: use `rules_for`, `entity`, `connections` and `read_file` instead.
+
+## 2. Scope
+
+Restate the scope in one line at the top of `RULES.md`. If it is broad and you can ask, ask for one module or domain. If you cannot ask, take the narrowest reasonable reading and record it.
+
+## 3. Find the rules
+
+- Concept sweep: `search(query, kind:"sao:Rule")` for each concept in scope (calculation, validation, authorization, state change, defaults, limits). Default limit. Hits are leads: `search` never returns empty.
+- File sweep: for each program or file the hits point to, call `rules_for(path)` and follow `next_call` to the end. This finds rules the concept sweep missed. It also returns rules that only support those lines, so check each.
+- For every rule that goes into the inventory: `entity(entity_id, include:["description","evidence"])`. A name from `rules_for` is not a rule statement. The entity gives the statement, typed values, the verbatim quote and the line span; start from those and check them in step 4.
+
+## 4. Verify against source
+
+`read_file(path, start_line, end_line)` on every evidence span before it goes in the inventory. Confirm the quote or condition is on those lines. Then:
+
+- Enforcement point: find where in the execution path the check runs or the update is made, not just where a value is declared. Record what happens on violation (rejects, abends, clamps, ignores, logs and continues).
+- Declared but not enforced: a field, constant, or check that nothing reads or that cannot be reached. Mark it `declared-not-enforced`, never as a rule.
+- Scope: say if the rule holds on every path, on some, or only in one screen or job.
+- Values: copy literals, rates, divisors, thresholds, and table entries from the source lines, not from a summary. Rules that depend on a lookup table or data file: read the table.
+
+## 5. Trace flows
+
+For the main entry points in scope (a batch job's main paragraph, a transaction handler), read the path from input to final write, using `connections` on the program entity for call edges and `read_file` for the code. Look for ignored input, overwrites where the name suggests adding, swallowed errors, defaults that mask failures, and updates that happen in an order or place the rules did not mention. Add behavior the graph did not give you as new rules with `source: flow-trace`.
+
+## 6. Write the inventory
+
+Header: scope, date, build (`corpus_info` snapshot id). Then one block per rule:
+
+```
+### BR-001 short-name
+- Claim: one plain sentence
+- Category: calculation | validation | authorization | state-transition | default | limit | other
+- Evidence: `path:start-end` — `short quote from the lines`
+- Enforcement point: `path:line` and what happens on violation
+- Values: literals, rates, thresholds, with their source lines
+- Status: confirmed | corrected | declared-not-enforced | uncertain
+- CoreStory: rule id and name, or `none (found in source)`
+- Notes: how it differs from the graph's statement (if corrected); source: graph | flow-trace | source-search
+```
+
+Group by category. Add a table of `declared-not-enforced` and `uncertain` rules with the reason.
+
+End with `## Not verified`: rules you did not read back against source, files or flows you did not reach, paginated results you did not exhaust, constructs the graph has no structure for, and that the graph describes the ingested snapshot, not necessarily the working tree. An empty or exhausted `rules_for` does not mean a file has no rules.
+
+Do not call the inventory complete. CoreStory indexes and quotes code; it does not run it, so do not say CoreStory tested any behavior.

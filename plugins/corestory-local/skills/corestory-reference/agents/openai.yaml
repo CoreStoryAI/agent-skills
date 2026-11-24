@@ -1,0 +1,14 @@
+interface:
+  display_name: "CoreStory Reference"
+  short_description: "Install, set up and tool reference for CoreStory v3"
+  default_prompt: "Use $corestory-reference to help me install or understand CoreStory."
+policy:
+  allow_implicit_invocation: false
+dependencies:
+  tools:
+    - type: mcp
+      value: corestory-local
+      description: >-
+        Local CoreStory code intelligence.
+        Start it from the repository folder with: corestory mcp (in Codex, set cwd to the repository)
+      transport: stdio

@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s' '{\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": \"This repository has CoreStory v3 code intelligence. For any change to this code or any question about it, first use the matching CoreStory skill (for example implement-feature, bug-resolver, generate-tests or corestory-ask) before editing or answering.\"}}'"
+          }
+        ]
+      }
+    ]
+  }
+}
